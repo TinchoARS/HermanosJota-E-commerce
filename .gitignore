@@ -1,0 +1,10 @@
+# Archivos locales (no se suben)
+CLAUDE.md
+contexto_del_proyecto.md
+ManualDeMarca.pdf
+Kit de imágenes/
+
+# Node
+node_modules/
+.env
+npm-debug.log*
