@@ -22,12 +22,20 @@ function getProductos(req, res) {
 // :id es un parámetro de ruta: Express lo deja en req.params.id
 // (siempre string, por eso se convierte con Number antes de
 // comparar contra los id numéricos del array).
+// Antes se valida que el id sean solo dígitos: Number() acepta
+// cosas como "0x2" o "2.0" y las convierte en 2, así que sin esta
+// validación /api/productos/0x2 devolvería el producto 2.
 // Si no hay coincidencia se corta la función con return y se
 // responde 404 en JSON; si se omite el return, la respuesta
 // seguiría adelante y daría "Cannot set headers after sent".
 // ------------------------------------------------------------
 function getProductoPorId(req, res) {
   const { id } = req.params;
+
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).json({ error: `El id "${id}" no es válido` });
+  }
+
   const producto = productos.find((item) => item.id === Number(id));
 
   if (!producto) {
