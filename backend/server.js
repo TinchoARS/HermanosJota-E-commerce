@@ -62,19 +62,10 @@ app.use((req, res) => {
 // vacío es obligatorio y no se puede borrar.
 // Primero se loguea el error real (que nunca se le devuelve al
 // cliente por seguridad) y después se responde un 500 genérico.
-// Si el error ya trae un status 4xx (ej: express.json() tira 400
-// cuando el body es un JSON mal formado) se respeta ese status,
-// porque es un error del cliente y no del servidor.
 // Debe ir al final, después de todas las rutas.
 // ------------------------------------------------------------
 app.use((err, req, res, next) => {
   console.error(err);
-
-  const status = err.status || err.statusCode || 500;
-  if (status >= 400 && status < 500) {
-    return res.status(status).json({ error: 'Petición inválida' });
-  }
-
   res.status(500).json({ error: 'Error interno del servidor' });
 });
 
