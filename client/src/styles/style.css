@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap');
+
+:root {
+  /* Paleta — Manual de Marca Hermanos Jota */
+  --color-siena-tostado: #A0522D;
+  --color-verde-salvia: #87A96B;
+  --color-alabastro-calido: #F5E6D3;
+  --color-vara-de-oro: #D4A437;
+  --color-rosa-polvoriento: #C47A6D;
+
+  /* Tipografía primaria: Inter — cuerpo, UI, apps digitales */
+  --font-principal: 'Inter', sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Tipografía secundaria: Playfair Display — títulos editoriales, citas, premium */
+  --font-secundaria: 'Playfair Display', Georgia, serif;
+
+  /* Guías de uso tipográfico */
+  --font-size-cuerpo: 12pt;
+  --font-size-leyendas: 9pt;
+  --line-height-cuerpo: 1.6;
+  --letter-spacing-titulos: 0.1em;
+  --letter-spacing-leyendas: 0.02em;
+  --letter-spacing-ctas: 0.08em;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-principal);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-cuerpo);
+  line-height: var(--line-height-cuerpo);
+  background-color: var(--color-alabastro-calido);
+  color: var(--color-siena-tostado);
+}
+/* =========================================
+   ESTILOS DE NAVBAR
+   ========================================= */
+   .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    border-bottom: 1px solid rgba(160, 82, 45, 0.15); /* Línea sutil separadora */
+  }
+  
+  /* --- LOGO Y MARCA --- */
+  .navbar-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .navbar-logo-img {
+    width: 50px; /* Ajustado para que quede proporcional al texto */
+    height: auto;
+  }
+  
+  .navbar-brand-text {
+    font-family: var(--font-secundaria);
+    font-weight: var(--font-weight-bold);
+    font-size: 1.2rem;
+    color: var(--color-siena-tostado);
+    letter-spacing: var(--letter-spacing-titulos);
+    transition: color 0.4s ease-in-out;
+  }
+  /* Este es el bloque nuevo que aplica el color verde al pasar el mouse */
+.navbar-brand-text:hover {
+  color: var(--color-verde-salvia);
+  cursor: pointer; /* Muestra la "manito" al pasar el cursor */
+}
+  /* --- MENÚ CENTRAL Y BOTÓN --- */
+  .navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+  
+  .navbar-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+  }
+  
+  .navbar-links a {
+    text-decoration: none;
+    color: var(--color-siena-tostado);
+    font-family: var(--font-principal);
+    font-weight: var(--font-weight-medium);
+    font-size: 0.9rem;
+    letter-spacing: var(--letter-spacing-ctas);
+    transition: opacity 0.2s;
+  }
+  
+  .navbar-links a:hover {
+    opacity: 0.7;
+  }
+  
+  .navbar-cart-btn {
+    background-color: var(--color-siena-tostado);
+    color: white;
+    border: none;
+    /* Achicamos el padding (antes era 0.8rem 1.5rem) para reducir el recuadro */
+    padding: 0.5rem 1rem; 
+    font-family: var(--font-principal);
+    font-weight: var(--font-weight-bold);
+    font-size: 0.9rem;
+    letter-spacing: var(--letter-spacing-ctas);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    
+    /* Esto alinea perfectamente el ícono SVG con el texto del contador */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .navbar-cart-btn:hover {
+    background-color: #8B4513; 
+  }
