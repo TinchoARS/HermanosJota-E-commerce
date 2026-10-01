@@ -1,12 +1,12 @@
 import Navbar from './components/Navbar';
 import ProductList from './components/ProductList';
+import ContactForm from './components/ContactForm'; // <-- Agregás esta línea
+import Footer from './components/Footer';
 import useProductos from './hooks/useProductos';
 
 function App() {
-  // C4: el catálogo se pide a la API al montar la app.
   const { productos, loading, error, recargar } = useProductos();
 
-  // Provisorios hasta F9/F10 (Persona 3): carrito y navegación al detalle.
   const verDetalle = (producto) => console.log('Ver detalle', producto.id);
   const agregarAlCarrito = (producto) => console.log('Agregar', producto.id);
 
@@ -22,7 +22,12 @@ function App() {
           onSeleccionar={verDetalle}
           onAgregar={agregarAlCarrito}
         />
+        
+        {/* Renderizado del Formulario de Contacto (Task F8) */}
+        <ContactForm />
       </main>
+      
+      <Footer />
     </>
   )
 }
