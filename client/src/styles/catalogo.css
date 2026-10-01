@@ -1,0 +1,130 @@
+/* =========================================
+   CATÁLOGO: ProductList y ProductCard
+   ========================================= */
+.catalogo {
+  padding: 3rem 5%;
+}
+
+.catalogo-titulo {
+  font-family: var(--font-secundaria);
+  font-weight: var(--font-weight-bold);
+  font-size: 2rem;
+  letter-spacing: var(--letter-spacing-titulos);
+  margin-bottom: 2rem;
+}
+
+.catalogo-grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+/* --- TARJETA --- */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: 1px solid rgba(160, 82, 45, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  box-shadow: 0 6px 20px rgba(160, 82, 45, 0.15);
+}
+
+.product-card-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background-color: var(--color-alabastro-calido);
+}
+
+.product-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.5rem;
+  padding: 1.25rem;
+}
+
+.product-card-nombre {
+  font-family: var(--font-secundaria);
+  font-size: 1.15rem;
+}
+
+.product-card-precio {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-verde-salvia);
+}
+
+.product-card-acciones {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.product-card-acciones .btn {
+  flex: 1;
+}
+
+/* --- BOTONES --- */
+.btn {
+  padding: 0.6rem 1rem;
+  font-family: var(--font-principal);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.85rem;
+  letter-spacing: var(--letter-spacing-ctas);
+  white-space: nowrap;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primario {
+  background-color: var(--color-siena-tostado);
+  color: white;
+  border: 1px solid var(--color-siena-tostado);
+}
+
+.btn-primario:hover {
+  background-color: #8B4513;
+}
+
+.btn-secundario {
+  background-color: transparent;
+  color: var(--color-siena-tostado);
+  border: 1px solid var(--color-siena-tostado);
+}
+
+.btn-secundario:hover {
+  background-color: var(--color-siena-tostado);
+  color: white;
+}
+
+/* --- ESTADOS: cargando, error y vacío --- */
+.catalogo-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 5%;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(160, 82, 45, 0.2);
+  border-top-color: var(--color-siena-tostado);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
