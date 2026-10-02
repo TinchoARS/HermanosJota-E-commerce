@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
@@ -26,9 +26,31 @@ function App() {
     setCarrito((items) => [...items, producto.id]);
   };
 
+  // F10 - Posición del scroll en el catálogo al entrar a un detalle, para
+  // devolver al usuario al mismo lugar cuando vuelve. null = nada guardado.
+  const scrollCatalogo = useRef(null);
+
   // F10 - onSeleccionar desde ProductList, onVolver desde ProductDetail.
-  const verDetalle = (producto) => setProductoSeleccionado(producto);
+  const verDetalle = (producto) => {
+    scrollCatalogo.current = window.scrollY;
+    setProductoSeleccionado(producto);
+  };
   const volverAlCatalogo = () => setProductoSeleccionado(null);
+
+  // F10 - Al cambiar de vista, el navegador mantiene el scroll anterior: el
+  // detalle aparecía a mitad de página. Se lleva el detalle arriba de todo y,
+  // al volver, se restaura la posición guardada del catálogo.
+  // Se usa useLayoutEffect y no useEffect porque corre cuando el DOM ya se
+  // actualizó pero antes de que el navegador pinte: así la vista nueva no se
+  // muestra un instante en la posición vieja antes de "saltar".
+  useLayoutEffect(() => {
+    if (productoSeleccionado) {
+      window.scrollTo(0, 0);
+    } else if (scrollCatalogo.current !== null) {
+      window.scrollTo(0, scrollCatalogo.current);
+      scrollCatalogo.current = null;
+    }
+  }, [productoSeleccionado]);
 
   return (
     <>
