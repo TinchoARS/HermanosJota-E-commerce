@@ -1,0 +1,76 @@
+/* =========================================
+   DETALLE: ProductDetail (TASK F7)
+   ========================================= */
+.producto-detalle {
+  display: grid;
+  /* minmax(0, 1fr) en vez de 1fr: sin esto un img con ancho natural
+     estira la columna y rompe la grilla en pantallas chicas. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+  padding: 3rem 5%;
+}
+
+.producto-detalle__imagen {
+  background-color: var(--color-alabastro-calido);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.producto-detalle__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.producto-detalle__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.producto-detalle__nombre {
+  font-family: var(--font-secundaria);
+  font-weight: var(--font-weight-bold);
+  font-size: 2.2rem;
+  letter-spacing: var(--letter-spacing-titulos);
+}
+
+.producto-detalle__precio {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-verde-salvia);
+}
+
+.producto-detalle__seccion h2 {
+  font-family: var(--font-secundaria);
+  font-size: 1.1rem;
+  letter-spacing: var(--letter-spacing-ctas);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.producto-detalle__seccion p {
+  line-height: var(--line-height-cuerpo);
+  font-weight: var(--font-weight-light);
+}
+
+.producto-detalle__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* En pantallas chicas la grilla de dos columnas colapsa a una sola. */
+@media (max-width: 768px) {
+  .producto-detalle {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .producto-detalle__nombre {
+    font-size: 1.7rem;
+  }
+}
