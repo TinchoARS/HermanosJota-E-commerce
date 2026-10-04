@@ -13,10 +13,16 @@ const ProductCard = ({ producto, onSeleccionar, onAgregar }) => {
         alt={nombre}
         className="product-card-img"
         loading="lazy"
+        onClick={() => onSeleccionar(producto)} // <-- Se agregó el evento click a la imagen
       />
 
       <div className="product-card-body">
-        <h3 className="product-card-nombre">{nombre}</h3>
+        <h3 
+          className="product-card-nombre" 
+          onClick={() => onSeleccionar(producto)} // <-- Se agregó el evento click al título
+        >
+          {nombre}
+        </h3>
         <p className="product-card-precio">
           {precio.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
         </p>

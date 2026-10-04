@@ -43,109 +43,143 @@ body {
   background-color: var(--color-alabastro-calido);
   color: var(--color-siena-tostado);
 }
+
 /* =========================================
    ESTILOS DE NAVBAR
    ========================================= */
-   .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 5%;
-    border-bottom: 1px solid rgba(160, 82, 45, 0.15); /* Línea sutil separadora */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 5%;
+  border-bottom: 1px solid rgba(160, 82, 45, 0.15); /* Línea sutil separadora */
 
-    /* Fija arriba al scrollear: así el carrito se ve en todas las secciones.
-       Necesita fondo propio para que el contenido no se vea por detrás. */
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: var(--color-alabastro-calido);
-  }
+  /* Fija arriba al scrollear */
+  position: sticky;
+  top: 0;
+  z-index: 10;
   
-  /* --- LOGO Y MARCA --- */
-  .navbar-logo-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .navbar-logo-img {
-    width: 50px; /* Ajustado para que quede proporcional al texto */
-    height: auto;
-  }
-  
-  .navbar-brand-text {
-    font-family: var(--font-secundaria);
-    font-weight: var(--font-weight-bold);
-    font-size: 1.2rem;
-    color: var(--color-siena-tostado);
-    letter-spacing: var(--letter-spacing-titulos);
-    transition: color 0.4s ease-in-out;
-  }
-  /* Este es el bloque nuevo que aplica el color verde al pasar el mouse */
-.navbar-brand-text:hover {
-  color: var(--color-verde-salvia);
-  cursor: pointer; /* Muestra la "manito" al pasar el cursor */
+  /* Efecto Glassmorphism */
+  background-color: rgba(245, 230, 211, 0.85); /* Alabastro cálido con 85% de opacidad */
+  backdrop-filter: blur(12px); /* El desenfoque tipo vidrio */
+  -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
 }
-  /* --- MENÚ CENTRAL Y BOTÓN --- */
-  .navbar-menu {
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-  }
-  
-  .navbar-links {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-  }
-  
-  .navbar-links a {
-    text-decoration: none;
-    color: var(--color-siena-tostado);
-    font-family: var(--font-principal);
-    font-weight: var(--font-weight-medium);
-    font-size: 0.9rem;
-    letter-spacing: var(--letter-spacing-ctas);
-    transition: opacity 0.2s;
-  }
-  
-  .navbar-links a:hover {
-    opacity: 0.7;
-  }
-  
-  .navbar-cart-btn {
-    background-color: var(--color-siena-tostado);
-    color: white;
-    border: none;
-    /* Achicamos el padding (antes era 0.8rem 1.5rem) para reducir el recuadro */
-    padding: 0.5rem 1rem; 
-    font-family: var(--font-principal);
-    font-weight: var(--font-weight-bold);
-    font-size: 0.9rem;
-    letter-spacing: var(--letter-spacing-ctas);
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    
-    /* Ícono y contador centrados en los dos ejes. line-height: 1 evita que el
-       interlineado del body (1.6) empuje el texto hacia abajo. */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    line-height: 1;
-    min-width: 4.5rem; /* No cambia de ancho al pasar de (9) a (10) */
-  }
 
-  .navbar-cart-btn svg {
-    display: block;
-    flex-shrink: 0;
-  }
+/* --- LOGO Y MARCA --- */
+.navbar-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none; /* Quita el subrayado del enlace */
+  color: inherit;
+  cursor: pointer; /* Muestra la manito en todo el bloque */
+}
+
+.navbar-logo-img {
+  width: 50px;
+  height: auto;
+}
+
+.navbar-brand-text {
+  font-family: var(--font-secundaria);
+  font-weight: var(--font-weight-bold);
+  font-size: 1.2rem;
+  color: var(--color-siena-tostado);
+  letter-spacing: var(--letter-spacing-titulos);
+  transition: color 0.4s ease-in-out;
+}
+
+/* El hover se aplica al contenedor para que el texto cambie 
+   incluso si el mouse está sobre la imagen del logo */
+.navbar-logo-container:hover .navbar-brand-text {
+  color: var(--color-verde-salvia);
+}
+
+/* --- MENÚ CENTRAL Y BOTÓN --- */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: var(--color-siena-tostado);
+  font-family: var(--font-principal);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.9rem;
+  letter-spacing: var(--letter-spacing-ctas);
+  transition: opacity 0.2s;
+}
+
+.navbar-links a:hover {
+  opacity: 0.7;
+}
+
+.navbar-cart-btn {
+  background-color: var(--color-siena-tostado);
+  color: white;
+  border: none;
+  /* Hacemos el botón más simétrico, tipo ícono */
+  padding: 0.6rem; 
+  cursor: pointer;
+  border-radius: 8px; /* Un poco más redondo */
+  transition: background-color 0.3s ease, transform 0.1s ease;
   
-  .navbar-cart-btn:hover {
-    background-color: #8B4513; 
-  }
-  /* --- ESTILOS DEL FOOTER --- */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* CRÍTICO: Position relative para que el badge flote respecto a este botón */
+  position: relative; 
+}
+
+.navbar-cart-btn svg {
+  display: block;
+}
+
+/* Efecto táctil heredado de los otros botones */
+.navbar-cart-btn:active {
+  transform: scale(0.92);
+}
+
+.navbar-cart-btn:hover {
+  background-color: #8B4513; 
+}
+
+/* --- BADGE FLOTANTE DEL CARRITO --- */
+.cart-badge {
+  position: absolute;
+  /* Lo movemos un poquito más afuera para compensar el nuevo tamaño */
+  top: -8px;
+  right: -8px;
+  
+  background-color: var(--color-verde-salvia); 
+  /* Cambiamos el blanco por un verde muy oscuro/casi negro para máximo contraste */
+  color: #1A2E05; 
+  
+  font-family: var(--font-principal);
+  font-weight: 800; /* Extra bold para que el número tenga más cuerpo */
+  font-size: 0.85rem; /* Agrandamos el número */
+  
+  /* Agrandamos el círculo de 20px a 24px */
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  
+  border: 2px solid rgba(245, 230, 211, 0.9);
+  /* Oscurecemos apenas la sombra para que se despegue más del botón */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.25); 
+}
+/* --- ESTILOS DEL FOOTER --- */
 .footer-container {
   background-color: var(--siena-tostado, #A0522D);
   color: var(--alabastro-calido, #F5E6D3);
@@ -199,17 +233,20 @@ body {
   font-size: 0.85rem;
   font-weight: 300;
 }
+
 /* --- ESTILOS DEL FORMULARIO DE CONTACTO --- */
 .contact-section {
   max-width: 600px;
   margin: 4rem auto;
   padding: 2.5rem;
-  background-color: var(--alabastro-calido, #F5E6D3); /* Color del manual de marca */
+  background-color: var(--alabastro-calido, #F5E6D3);
   border-radius: 8px;
+
+  animation: aparecerDesdeAbajo 0.8s ease-out forwards;
 }
 
 .contact-title {
-  font-family: 'Playfair Display', serif; /* Tipografía oficial */
+  font-family: 'Playfair Display', serif;
   color: var(--siena-tostado, #A0522D);
   text-align: center;
   margin-bottom: 2rem;
@@ -246,11 +283,11 @@ body {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--verde-salvia, #87A96B); /* Acento verde de la marca */
+  border-color: var(--verde-salvia, #87A96B);
 }
 
 .submit-btn {
-  background-color: var(--siena-tostado, #A0522D); /* Botón color primario */
+  background-color: var(--siena-tostado, #A0522D);
   color: white;
   padding: 1rem;
   border: none;
@@ -265,8 +302,9 @@ body {
 }
 
 .submit-btn:hover {
-  background-color: var(--verde-salvia, #87A96B); /* Al pasar el mouse */
+  background-color: var(--verde-salvia, #87A96B);
 }
+
 /* Error de validación debajo de cada campo */
 .form-error {
   margin-top: 0.4rem;
@@ -292,7 +330,6 @@ body {
   border-radius: 4px;
 }
 
-/* Al navegar a una sección, que el navbar fijo no tape su título. */
 #catalogo,
 #contacto {
   scroll-margin-top: 100px;
@@ -301,49 +338,78 @@ body {
 /* =========================================
    HERO
    ========================================= */
-.hero {
-  display: flex;
-  align-items: center;
-  min-height: 70vh;
-  padding: 4rem 5%;
-  /* Degradado oscuro a la izquierda para que el texto se lea sobre la foto. */
-  background-image:
-    linear-gradient(90deg, rgba(60, 30, 15, 0.8) 0%, rgba(60, 30, 15, 0.45) 55%, rgba(60, 30, 15, 0.1) 100%),
-    var(--hero-img);
-  background-size: cover;
-  background-position: center;
-  color: var(--color-alabastro-calido);
-}
-
-.hero-contenido {
-  max-width: 560px;
-}
-
-.hero-volanta {
-  font-size: var(--font-size-leyendas);
-  letter-spacing: var(--letter-spacing-ctas);
-  text-transform: uppercase;
-  color: var(--color-vara-de-oro);
-  margin-bottom: 1rem;
-}
-
-.hero-titulo {
-  font-family: var(--font-secundaria);
-  font-weight: var(--font-weight-bold);
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  line-height: 1.15;
-  margin-bottom: 1rem;
-}
-
-.hero-texto {
-  font-weight: var(--font-weight-light);
-  margin-bottom: 2rem;
-}
-
-.hero-cta {
-  padding: 0.9rem 1.6rem;
-}
-
+   .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    /* Aumentamos un poco la altura en pantallas grandes para que la foto luzca mejor */
+    min-height: 75vh;
+    padding: 5rem 5%;
+    color: var(--color-alabastro-calido);
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  /* Capa detrás del contenido para la imagen de fondo animada */
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    
+    background-image:
+      linear-gradient(90deg, rgba(60, 30, 15, 0.82) 0%, rgba(60, 30, 15, 0.5) 50%, rgba(60, 30, 15, 0.15) 100%),
+      var(--hero-img);
+    background-size: cover;
+    
+    /* CAMBIO CLAVE: Anclamos la imagen hacia arriba/centro (center 35%) 
+       para evitar que el sillón baje demasiado y se corte en monitores horizontales */
+    background-position: center 65%;
+    
+    animation: zoomFondo 4s ease-out forwards;
+  }
+  
+  @keyframes zoomFondo {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.05);
+    }
+  }
+  
+  .hero-contenido {
+    max-width: 560px;
+    animation: aparecerDesdeAbajo 0.8s ease-out forwards;
+  }
+  
+  .hero-volanta {
+    font-size: var(--font-size-leyendas);
+    letter-spacing: var(--letter-spacing-ctas);
+    text-transform: uppercase;
+    color: var(--color-vara-de-oro);
+    margin-bottom: 1rem;
+  }
+  
+  .hero-titulo {
+    font-family: var(--font-secundaria);
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-texto {
+    font-weight: var(--font-weight-light);
+    margin-bottom: 2rem;
+  }
+  
+  .hero-cta {
+    padding: 0.9rem 1.6rem;
+  }
 /* =========================================
    AVISO "SE AGREGÓ AL CARRITO"
    ========================================= */
@@ -383,8 +449,6 @@ body {
    MOBILE: navbar en dos filas y hero legible
    ========================================= */
 @media (max-width: 700px) {
-  /* Fila 1: logo + carrito. Fila 2: links. Así el carrito no queda fuera de
-     la pantalla. */
   .navbar {
     flex-wrap: wrap;
     row-gap: 0.75rem;
@@ -399,8 +463,6 @@ body {
     font-size: 1rem;
   }
 
-  /* display: contents saca a .navbar-menu del layout, así sus hijos (links y
-     carrito) se acomodan directamente en el flex del navbar. */
   .navbar-menu {
     display: contents;
   }
@@ -421,8 +483,6 @@ body {
     scroll-margin-top: 120px;
   }
 
-  /* En pantallas angostas el texto ocupa todo el ancho: el degradado lateral
-     no alcanza, se oscurece la foto entera. */
   .hero {
     min-height: 60vh;
     background-image:
@@ -430,3 +490,16 @@ body {
       var(--hero-img);
   }
 }
+/* =========================================
+   ANIMACIONES DE ENTRADA
+   ========================================= */
+   @keyframes aparecerDesdeAbajo {
+    from {
+      opacity: 0;
+      transform: translateY(30px); /* Arranca 30px más abajo */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0); /* Termina en su posición original */
+    }
+  }

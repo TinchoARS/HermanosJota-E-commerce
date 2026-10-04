@@ -9,7 +9,7 @@ const Footer = () => {
           <h4 className="footer-title">Contacto</h4>
           <p>📍 Av. San Juan 2847, CABA</p>
           <p>📞 WhatsApp: +54 11 4567-8900</p>
-          <p>✉️ ventas@hermanosjota.com.ar</p>
+          <p>✉️ info@hermanosjota.com.ar</p>
         </div>
 
         <div className="footer-section">
