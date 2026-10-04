@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "author": "Gaston Guber, Martin Fradejas Soria, Cristian Benjamin Cerioni Lanzilotta",
+  "author": "Gastón Guber, Martin Fradejas Soria, Cristian Benjamin Cerioni Lanzilotta",
   "engines": {
     "node": ">=18"
   },

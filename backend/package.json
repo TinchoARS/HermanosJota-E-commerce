@@ -8,7 +8,7 @@
     "dev": "nodemon server.js"
   },
   "keywords": [],
-  "author": "Gaston Guber, Martin Fradejas Soria, Cristian Benjamin Cerioni Lanzilotta",
+  "author": "Gastón Guber, Martin Fradejas Soria, Cristian Benjamin Cerioni Lanzilotta",
   "license": "ISC",
   "engines": {
     "node": ">=18"

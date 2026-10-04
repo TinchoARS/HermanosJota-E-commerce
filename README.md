@@ -17,13 +17,25 @@ La API expone el catálogo y lo consume el frontend con `fetch` a través de hoo
 
 ---
 
+## 🧭 Decisiones tomadas
+
+- **API propia con Express en vez de datos en el frontend.** Es el objetivo central del sprint: el cliente ya no tiene los productos hardcodeados, los pide por HTTP.
+- **Vite en lugar de Create React App.** La consigna menciona CRA, pero CRA levanta el frontend en el 3000, igual que el backend, y eso genera un conflicto de puertos. Vite usa el 5173 y ambos conviven. El listado de mejoras del curso también lo propone.
+- **Puerto 3000 para la API**, por decisión del grupo siguiendo la recomendación de la profesora. También se evaluaron el 8080 y el 3001.
+- **CORS con lista de orígenes permitidos** en lugar de `cors()` abierto: el frontend puede consultar la API, pero otras páginas que el usuario tenga abiertas en el navegador no.
+- **Imágenes servidas por el backend** desde `public/catalogo`, y no desde el frontend, para que todo el catálogo viva en un solo lado.
+- **Carrito simulado, sin persistencia ni checkout.** Es una simulación de estado: el contador vive en `App.jsx` y no hay backend de carritos.
+- **Datos en un array de JavaScript**, según lo que pide la consigna. Cuando haya base de datos, se reemplaza ese archivo y el resto de la app no cambia.
+
+---
+
 ## 👥 Integrantes
 
 | Nombre | Rol / Parte del proyecto |
 | :--- | :--- |
-| Gaston Guber | API base: inicialización de Express, endpoints de productos y estructura de carpetas |
-| Martin Fradejas Soria | Catálogo: `ProductCard`, `ProductList`, hook `useProductos`, conexión con la API y correcciones del backend |
-| Cristian Benjamin Cerioni | Frontend: creación de la app con Vite, estilos base y variables del manual de marca, `Navbar`, `Footer`, `ContactForm` y URL de la API |
+| Gastón Guber | API en Express (endpoints, rutas modulares y middlewares) y **mejoras de integración**: CORS, imágenes servidas desde el backend y `README` |
+| Martin Fradejas Soria | Catálogo de productos: `ProductCard`, `ProductList`, hook `useProductos` y el renderizado condicional del detalle en `App.jsx` |
+| Cristian Benjamin Cerioni Lanzilotta | Base del frontend con Vite, estilos y variables del manual de marca, `Navbar`, `Footer` y `ContactForm` |
 
 ---
 
@@ -119,12 +131,6 @@ HermanosJota-E-commerce/
 └── README.md
 ```
 
-### Separación entre `app.js` y `server.js`
-
-`app.js` arma y exporta la app de Express (CORS, middlewares, rutas, manejo de errores) pero **no escucha en ningún puerto**. `server.js` la importa y llama a `app.listen()`. Así la app se puede importar en un test sin levantar un servidor de verdad.
-
----
-
 ## 🔌 Endpoints de la API
 
 Base: `http://localhost:3000`
@@ -136,63 +142,12 @@ Base: `http://localhost:3000`
 | `GET` | `/api/productos/:id` | Detalle de un producto | `200` — objeto · `400` — id no numérico · `404` — no existe |
 | `GET` | `/catalogo/:imagen` | Imagen del catálogo (archivo estático) | `200` — `image/png` |
 
-Sobre `/api/productos` solo se admite `GET`. Cualquier otro método (`POST`, `PUT`, `PATCH`, `DELETE`) responde `405 Method Not Allowed` con la cabecera `Allow: GET`, en lugar de un 404: el recurso existe, lo que no existe es la operación. Las rutas que no corresponden a ningún recurso devuelven `404` con `{"error": "Ruta no encontrada"}`, y los errores internos `500` con `{"error": "Error interno del servidor"}`.
-
-Ejemplos con `curl`:
+Sobre `/api/productos` solo se admite `GET`: los demás métodos devuelven `405 Method Not Allowed`. Las rutas inexistentes devuelven `404` y los errores internos `500`, siempre en JSON.
 
 ```bash
 curl http://localhost:3000/api/productos
-curl http://localhost:3000/api/productos/1
-curl -i http://localhost:3000/api/productos/999          # 404
-curl -i -X POST http://localhost:3000/api/productos      # 405
+curl -i http://localhost:3000/api/productos/999      # 404
 ```
-
----
-
-## ⚙️ Configuración
-
-**Variables de entorno del backend** (opcionales, con valor por defecto):
-
-| Variable | Default | Descripción |
-| :--- | :--- | :--- |
-| `PORT` | `3000` | Puerto en el que escucha la API (ver [Sobre los puertos](#sobre-los-puertos)) |
-| `CORS_ORIGIN` | `http://localhost:5173,http://localhost:5174,http://localhost:4173` | Orígenes permitidos del **frontend**, separados por coma |
-
-**Variables de entorno del frontend:**
-
-| Variable | Default | Descripción |
-| :--- | :--- | :--- |
-| `VITE_API_URL` | — | URL base de la API. **Obligatoria**: sin ella el frontend busca los datos en su propio origen |
-
-`client/.env` está en el `.gitignore`, así que **cada_integrante tiene que crear el suyo**:
-
-```bash
-cp client/.env.example client/.env
-```
-
-Si cambiás el puerto del backend, tenés que actualizar `VITE_API_URL` en el frontend para que apunte al puerto nuevo.
-
-### Sobre los puertos
-
-El backend escucha en el **3000** y el frontend en el **5173**, así que no hay choque entre los dos.
-
-Esa separación no es casual: el proyecto usaba Create React App, que por defecto levanta el frontend en el 3000, igual que el backend. Eso sí era un conflicto. La migración a **Vite** (cuyo puerto por defecto es 5173) lo resolvió, por lo que hoy ambos servicios conviven sin problema.
-
-El puerto **3000 se mantiene por decisión conjunta del grupo, siguiendo la recomendación de la profesora** en la clase. Se evaluaron también el 8080 y el 3001, pero el 3000 es la convención de Node/Express y el que se indicó desde el curso, así que no se cambió.
-
-Ningún puerto está fijado a fuego: ambos son configurables.
-
-```bash
-# Backend en otro puerto
-PORT=4000 npm run dev
-```
-
-```bash
-# Frontend: ajustar en client/.env para que apunte al puerto nuevo
-VITE_API_URL=http://localhost:4000
-```
-
-> Si el 5173 estuviera ocupado, Vite sube solo al 5174 (no tiene `strictPort`) y ese origen ya está permitido en `CORS_ORIGIN`.
 
 ---
 
@@ -228,9 +183,19 @@ cp .env.example .env
 npm run dev
 ```
 
+El paso `cp .env.example .env` **no es opcional**: el `.env` está en el `.gitignore`, así que cada quien tiene que crear el suyo con la dirección de la API.
+
 Queda disponible en `http://localhost:5173`.
 
 > Necesitás las dos terminales corriendo a la vez: el frontend no tiene los productos adentro, los pide a la API en cada carga.
+
+### Sobre los puertos
+
+El backend escucha en el **3000** y el frontend en el **5173**, así que no se pisan. Ese desacople viene de usar **Vite**, que por defecto levanta el dev server en el 5173; antes, con Create React App, el frontend también iba al 3000 y ahí sí había conflicto.
+
+El **3000 se mantiene por decisión conjunta del grupo, siguiendo la recomendación de la profesora**. También se evaluaron el 8080 y el 3001, pero se eligió el 3000 por ser la convención de Node/Express y el indicado en el curso.
+
+Si en tu máquina el 3000 está ocupado, corré el backend con `PORT=4000 npm run dev` y poné `VITE_API_URL=http://localhost:4000` en tu `.env`.
 
 ---
 
