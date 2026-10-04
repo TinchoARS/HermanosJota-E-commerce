@@ -19,10 +19,15 @@ const Navbar = ({ cantidadCarrito, onNavegar }) => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo-container">
+      {/* Se cambió el div por una etiqueta <a> y se le agregó el evento onClick */}
+      <a 
+        href="#inicio" 
+        className="navbar-logo-container"
+        onClick={(e) => handleClick(e, 'inicio')}
+      >
         <img src={logo} alt="Logo Hermanos Jota" className="navbar-logo-img" />
         <span className="navbar-brand-text">HERMANOS JOTA</span>
-      </div>
+      </a>
 
       <div className="navbar-menu">
         <ul className="navbar-links">
@@ -49,7 +54,8 @@ const Navbar = ({ cantidadCarrito, onNavegar }) => {
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
-          ({cantidadCarrito})
+          {/* Badge flotante con la cantidad */}
+          <span className="cart-badge">{cantidadCarrito}</span>
         </button>
       </div>
     </nav>
