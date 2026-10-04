@@ -15,12 +15,19 @@ import useNavegacion from './hooks/useNavegacion';
 function App() {
   // El catálogo completo se pide una sola vez desde el hook.
   const { productos, loading, error, recargar } = useProductos();
-  const { cantidad, aviso, agregarAlCarrito } = useCarrito();
+  // El carrito recibe el catálogo porque guarda solo los ids y las cantidades:
+  // los nombres y los precios se resuelven contra productos.
+  const { items, cantidad, total, aviso, agregarAlCarrito } = useCarrito(productos);
   const { productoSeleccionado, verDetalle, volverAlCatalogo, navegar } = useNavegacion();
 
   return (
     <>
-      <Navbar cantidadCarrito={cantidad} onNavegar={navegar} />
+      <Navbar
+        cantidadCarrito={cantidad}
+        itemsCarrito={items}
+        totalCarrito={total}
+        onNavegar={navegar}
+      />
 
       <main>
         {/* Renderizado condicional: detalle si hay algo seleccionado,

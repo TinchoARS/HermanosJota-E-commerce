@@ -134,8 +134,7 @@ color: inherit;
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  /* El carrito ocupa la columna central del grid */
-  justify-self: center;
+  /* El centrado del botón lo aporta la celda .navbar-carrito del grid */
 
   /* Tipografía — Inter medium con el tracking de CTAs del manual de marca */
   font-family: var(--font-principal);
@@ -161,6 +160,107 @@ color: inherit;
 
 .navbar-cart-btn:hover {
   background-color: #8B4513; 
+}
+
+/* --- PANEL DEL CARRITO --- */
+/* El contenedor es la celda del centro del grid; el panel se posiciona
+   respecto de él. */
+.navbar-carrito {
+  position: relative;
+  justify-self: center;
+}
+
+.carrito-panel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(22rem, calc(100vw - 2rem));
+
+  background-color: var(--color-alabastro-calido);
+  border: 1px solid rgba(160, 82, 45, 0.25);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(60, 30, 15, 0.18);
+  padding: 1rem 1.1rem;
+  color: var(--color-siena-tostado);
+  text-align: left;
+  z-index: 20;
+}
+
+.carrito-panel__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(160, 82, 45, 0.2);
+}
+
+.carrito-panel__titulo {
+  font-family: var(--font-secundaria);
+  font-weight: var(--font-weight-bold);
+  font-size: 1rem;
+  letter-spacing: var(--letter-spacing-titulos);
+}
+
+.carrito-panel__cerrar {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--color-siena-tostado);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.carrito-panel__cerrar:hover {
+  color: var(--color-verde-salvia);
+}
+
+.carrito-panel__vacio {
+  padding: 0.9rem 0 0.2rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Con muchos productos la lista scrollea y el total queda siempre visible. */
+.carrito-panel__lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 15rem;
+  overflow-y: auto;
+  padding: 0.6rem 0;
+}
+
+.carrito-panel__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+/* La cantidad va pegada al nombre, atenuada para no competir con el precio. */
+.carrito-panel__cantidad {
+  margin-left: 0.3rem;
+  opacity: 0.65;
+}
+
+.carrito-panel__precio {
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.carrito-panel__total {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(160, 82, 45, 0.2);
+  font-weight: var(--font-weight-bold);
+  font-size: 0.95rem;
 }
 
 /* --- BADGE FLOTANTE DEL CARRITO --- */
@@ -477,9 +577,21 @@ color: inherit;
     font-size: 1rem;
   }
 
-  .navbar-cart-btn {
+  .navbar-carrito {
     order: 1;
+  }
+
+  .navbar-cart-btn {
     padding: 0.5rem 0.8rem;
+  }
+
+  /* En mobile el carrito queda a la derecha, así que el panel se alinea a su
+     borde para no salirse de la pantalla. */
+  .carrito-panel {
+    left: auto;
+    right: 0;
+    transform: none;
+    width: min(20rem, calc(100vw - 1.5rem));
   }
 
   .navbar-links {
