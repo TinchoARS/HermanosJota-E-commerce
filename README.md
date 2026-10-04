@@ -28,6 +28,8 @@ La API expone el catálogo y lo consume el frontend con `fetch` a través de hoo
 - **Lógica en hooks propios y `App.jsx` como orquestador.** El catálogo (`useProductos`), el carrito (`useCarrito`) y la navegación entre vistas (`useNavegacion`) están en hooks separados. `App.jsx` los llama y reparte los datos por props, así queda chico y cada parte se puede leer sola. El estado del carrito sigue viviendo en `App`, porque un hook guarda su estado en el componente que lo usa.
 - **Navegación sin router.** El catálogo y el detalle son vistas que `App.jsx` alterna con renderizado condicional, como pide la consigna. Por eso los links del navbar no son anclas comunes: si el usuario está en el detalle, primero se vuelve al catálogo y después se scrollea a la sección.
 - **Datos en un array de JavaScript**, según lo que pide la consigna. Cuando haya base de datos, se reemplaza ese archivo y el resto de la app no cambia.
+- **Carrito en el centro del header y con la palabra "Carrito" al lado del ícono.** Fue una decisión del grupo a partir de las correcciones de la primera entrega: el ícono quedaba aislado en el extremo derecho y se leía como un detalle menor. Centrado en la barra y con texto al lado, el carrito pasa a ser una sección más de la tienda.
+- **Imagen en el home.** El home arrancaba solo con texto. Se agregó un banner con una imagen y un botón de "Ver catálogo", con el objetivo de darle mayor impacto al usuario en la primera impresión. La imagen se importa como módulo desde React y se le pasa al CSS como variable, para que el degradado que garantiza el contraste del texto quede en la hoja de estilos.
 
 ---
 
@@ -45,7 +47,7 @@ La API expone el catálogo y lo consume el frontend con `fetch` a través de hoo
 
 **Frontend**
 
-- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto) y botón de carrito con el contador de productos agregados. Queda fijo arriba al scrollear, así el carrito está siempre a la vista, y en celular se acomoda en dos filas. Los links funcionan desde cualquier vista, incluido el detalle.
+- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto) y botón de carrito en el centro de la barra, con ícono, la palabra "Carrito" y el contador de productos agregados. Queda fijo arriba al scrollear, así el carrito esté siempre a la vista, y en celular se acomoda en dos filas. Los links funcionan desde cualquier vista, incluido el detalle.
 - **Hero:** banner de bienvenida con imagen, título y botón "Ver catálogo".
 - **Catálogo de productos:** grilla de tarjetas con imagen, nombre y precio en formato ARS. Incluye estados de carga (spinner), de error con botón "Reintentar" y de lista vacía.
 - **Detalle de producto:** imagen grande, nombre, descripción completa y precio, con los botones "Agregar al carrito" y "Volver al catálogo". El producto se pide a la API por id y maneja el 404 mostrando "Producto no encontrado". Al volver, el catálogo recupera la posición de scroll en la que estaba.

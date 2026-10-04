@@ -48,8 +48,11 @@ body {
    ESTILOS DE NAVBAR
    ========================================= */
 .navbar {
-  display: flex;
-  justify-content: space-between;
+  /* 1fr auto 1fr: las dos columnas laterales pesan igual, así que la del medio
+     queda en el centro exacto de la barra. El orden en el HTML es logo (izq),
+     carrito (centro) y menú (der). */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 1.5rem 5%;
   border-bottom: 1px solid rgba(160, 82, 45, 0.15); /* Línea sutil separadora */
@@ -71,8 +74,9 @@ body {
   align-items: center;
   gap: 1rem;
   text-decoration: none; /* Quita el subrayado del enlace */
-  color: inherit;
-  cursor: pointer; /* Muestra la manito en todo el bloque */
+color: inherit;
+  cursor: pointer; /* Muestra el manito en todo el bloque */
+  justify-self: start;
 }
 
 .navbar-logo-img {
@@ -95,17 +99,12 @@ body {
   color: var(--color-verde-salvia);
 }
 
-/* --- MENÚ CENTRAL Y BOTÓN --- */
-.navbar-menu {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-}
-
+/* --- MENÚ DERECHO --- */
 .navbar-links {
   display: flex;
   list-style: none;
   gap: 2rem;
+  justify-self: end;
 }
 
 .navbar-links a {
@@ -126,21 +125,33 @@ body {
   background-color: var(--color-siena-tostado);
   color: white;
   border: none;
-  /* Hacemos el botón más simétrico, tipo ícono */
-  padding: 0.6rem; 
+  /* Más padding horizontal ahora que lleva ícono + texto */
+  padding: 0.7rem 1.1rem;
   cursor: pointer;
   border-radius: 8px; /* Un poco más redondo */
   transition: background-color 0.3s ease, transform 0.1s ease;
-  
+
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.55rem;
+  /* El carrito ocupa la columna central del grid */
+  justify-self: center;
+
+  /* Tipografía — Inter medium con el tracking de CTAs del manual de marca */
+  font-family: var(--font-principal);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.85rem;
+  letter-spacing: var(--letter-spacing-ctas);
+  text-transform: uppercase;
+
   /* CRÍTICO: Position relative para que el badge flote respecto a este botón */
-  position: relative; 
+  position: relative;
 }
 
 .navbar-cart-btn svg {
   display: block;
+  width: 22px;
+  height: 22px;
 }
 
 /* Efecto táctil heredado de los otros botones */
@@ -449,7 +460,10 @@ body {
    MOBILE: navbar en dos filas y hero legible
    ========================================= */
 @media (max-width: 700px) {
+  /* En mobile el header vuelve a flex de dos filas: logo + carrito arriba,
+     links abajo. El grid de 3 columnas no entra en un teléfono. */
   .navbar {
+    display: flex;
     flex-wrap: wrap;
     row-gap: 0.75rem;
     padding: 0.75rem 5%;
@@ -463,12 +477,9 @@ body {
     font-size: 1rem;
   }
 
-  .navbar-menu {
-    display: contents;
-  }
-
   .navbar-cart-btn {
     order: 1;
+    padding: 0.5rem 0.8rem;
   }
 
   .navbar-links {

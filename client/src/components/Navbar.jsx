@@ -19,7 +19,6 @@ const Navbar = ({ cantidadCarrito, onNavegar }) => {
 
   return (
     <nav className="navbar">
-      {/* Se cambió el div por una etiqueta <a> y se le agregó el evento onClick */}
       <a 
         href="#inicio" 
         className="navbar-logo-container"
@@ -29,35 +28,36 @@ const Navbar = ({ cantidadCarrito, onNavegar }) => {
         <span className="navbar-brand-text">HERMANOS JOTA</span>
       </a>
 
-      <div className="navbar-menu">
-        <ul className="navbar-links">
-          {SECCIONES.map(({ id, texto }) => (
-            <li key={id}>
-              <a href={`#${id}`} onClick={(e) => handleClick(e, id)}>{texto}</a>
-            </li>
-          ))}
-        </ul>
-        <button className="navbar-cart-btn">
-          {/* Ícono de carrito blanco */}
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="18" 
-            height="18" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
-          {/* Badge flotante con la cantidad */}
-          <span className="cart-badge">{cantidadCarrito}</span>
-        </button>
-      </div>
+      {/* El carrito va en el medio del header: el grid de 3 columnas lo centra
+          entre el logo (izquierda) y el menú (derecha). */}
+      <button className="navbar-cart-btn">
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="22" 
+          height="22" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        >
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span className="navbar-cart-label">Carrito</span>
+        {/* Badge flotante con la cantidad */}
+        <span className="cart-badge">{cantidadCarrito}</span>
+      </button>
+
+      <ul className="navbar-links">
+        {SECCIONES.map(({ id, texto }) => (
+          <li key={id}>
+            <a href={`#${id}`} onClick={(e) => handleClick(e, id)}>{texto}</a>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 };
