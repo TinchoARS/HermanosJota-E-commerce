@@ -1,7 +1,7 @@
 import ProductCard from './ProductCard';
 import '../styles/catalogo.css';
 
-// F6 + C5 - Grilla del catálogo con sus estados de carga, error y vacío.
+// Grilla del catálogo con sus estados de carga, error y vacío.
 // loading, error y onReintentar son opcionales: si no se pasan, el
 // componente solo renderiza la lista que recibe.
 const ProductList = ({ productos, onSeleccionar, onAgregar, loading = false, error = null, onReintentar }) => {

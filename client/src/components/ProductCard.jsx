@@ -1,8 +1,8 @@
 import { API_URL } from '../hooks/useProductos';
 
-// F5 - Tarjeta de un producto del catálogo.
-// imagen viene como ruta relativa ("catalogo/Aparador Uspallata.png"), por
-// eso se arma la URL completa contra la API y se codifican los espacios.
+// Tarjeta de un producto del catálogo.
+// imagen viene como ruta relativa ("catalogo/aparador-uspallata.png"), por
+// eso se arma la URL completa contra la API.
 const ProductCard = ({ producto, onSeleccionar, onAgregar }) => {
   const { nombre, precio, imagen } = producto;
 

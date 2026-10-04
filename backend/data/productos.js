@@ -1,18 +1,11 @@
-// ============================================================
-// B3 - Datos hardcodeados del catálogo.
-// Fuente única de verdad para toda la API: el controller la
-// importa y responde estos mismos objetos, sin copiar el array.
+// Catálogo hardcodeado. Fuente única de verdad para la API: el controller
+// importa este mismo array, así que no hay datos duplicados.
 //
-// Campos de cada producto:
-//   id        -> identificador único, se usa en /api/productos/:id
-//   nombre    -> nombre comercial del mueble
-//   descripcion -> texto de presentación para el catálogo
-//   precio    -> precio en pesos argentinos (número, sin signo $)
-//   imagen    -> ruta relativa del archivo de imagen
+// Campos: id (identificador), nombre, descripcion, precio (en pesos, sin
+// símbolo) e imagen (ruta dentro de public/catalogo).
 //
-// Cuando haya base de datos, este archivo se reemplaza por las
-// consultas (el resto de la app no necesita cambios).
-// ============================================================
+// Cuando haya base de datos, este archivo se reemplaza por consultas y el
+// resto de la app no necesita cambios.
 
 const productos = [
   {
@@ -21,7 +14,7 @@ const productos = [
     descripcion:
       "Aparador de líneas limpias inspirado en los valles de Uspallata. Fabricado en nogal negro con patas de algarrobo, ofrece amplio almacenamiento oculto tras una puerta corrediza y un cajón interno. Su superficie mate realza la veta natural de la madera.",
     precio: 245000,
-    imagen: "catalogo/Aparador Uspallata.png",
+    imagen: "catalogo/aparador-uspallata.png",
   },
   {
     id: 2,
@@ -29,7 +22,7 @@ const productos = [
     descripcion:
       "Biblioteca estante abierto que evoca los balcones de Recoleta. Estructura de roble claro con repisas regulables y base cerrada para ocultar objetos. Diseño modular que permite combinar unidades verticales.",
     precio: 320000,
-    imagen: "catalogo/Biblioteca Recoleta.png",
+    imagen: "catalogo/biblioteca-recoleta.png",
   },
   {
     id: 3,
@@ -37,7 +30,7 @@ const productos = [
     descripcion:
       "Butaca de descanso con respaldo abultado y reposabrazos envolventes. Inspirada en los sillones de estancia mendocina, combina comodidad profunda con una silueta compacta ideal para espacios modernos.",
     precio: 188000,
-    imagen: "catalogo/Butaca Mendoza.png",
+    imagen: "catalogo/butaca-mendoza.png",
   },
   {
     id: 4,
@@ -45,7 +38,7 @@ const productos = [
     descripcion:
       "Mesa de centro de forma orgánica con borde vivo tallado. La textura marcada de la araucaria se convierte en el protagonista visual. Base cruzada de hierro negro mate que aporta contraste industrial.",
     precio: 156000,
-    imagen: "catalogo/Mesa de Centro Araucaria.png",
+    imagen: "catalogo/mesa-de-centro-araucaria.png",
   },
   {
     id: 5,
@@ -53,7 +46,7 @@ const productos = [
     descripcion:
       "Mesa de noche minimalista inspirada en la pureza de las cumbres. Un único cajón con cierre suave y una repisa inferior abierta. Forma rectangular con esquinas redondeadas para un toque amable.",
     precio: 98000,
-    imagen: "catalogo/Mesa de Noche Aconcagua.png",
+    imagen: "catalogo/mesa-de-noche-aconcagua.png",
   },
   {
     id: 6,
@@ -61,7 +54,7 @@ const productos = [
     descripcion:
       "Escritorio de trabajo con cajones laterales y repisa elevada para monitor. Inspirado en los muebles de oficina de la costa atlántica, combina funcionalidad profesional con calidez artesanal.",
     precio: 289000,
-    imagen: "catalogo/Escritorio Costa.png",
+    imagen: "catalogo/escritorio-costa.png",
   },
   {
     id: 7,
@@ -69,7 +62,7 @@ const productos = [
     descripcion:
       "Mesa de comedor extensible para ocho personas, inspirada en la amplitud de la pampa. Tablero de una sola pieza con borde natural live-edge. Extensiones ocultas bajo la superficie.",
     precio: 410000,
-    imagen: "catalogo/Mesa Comedor Pampa.png",
+    imagen: "catalogo/mesa-comedor-pampa.png",
   },
   {
     id: 8,
@@ -77,7 +70,7 @@ const productos = [
     descripcion:
       "Silla de escritorio ergonómica con respaldo curvo y asiento acolchado. Inspirada en las sillas de biblioteca del barrio Belgrano, ofrece soporte lumbar natural y un diseño que se integra en cualquier ambiente.",
     precio: 132000,
-    imagen: "catalogo/Silla de Trabajo Belgrano.png",
+    imagen: "catalogo/silla-de-trabajo-belgrano.png",
   },
   {
     id: 9,
@@ -85,7 +78,7 @@ const productos = [
     descripcion:
       "Par de sillas de comedor con respaldo ligeramente inclinado y asiento entrelazado de cuero. Inspiradas en las sillas de las casonas cordobesas, equilibran elegancia clásica y confort contemporáneo.",
     precio: 260000,
-    imagen: "catalogo/Sillas Córdoba.png",
+    imagen: "catalogo/sillas-cordoba.png",
   },
   {
     id: 10,
@@ -93,7 +86,7 @@ const productos = [
     descripcion:
       "Sillón de tres cuerpos con patas elevadas y tapizado profundo. Inspirado en los sofás de playa de Copacabana, su amplitud invita al descanso prolongado. Respaldo con cojines independientes extraíbles.",
     precio: 385000,
-    imagen: "catalogo/Sillón Copacabana.png",
+    imagen: "catalogo/sillon-copacabana.png",
   },
   {
     id: 11,
@@ -101,7 +94,7 @@ const productos = [
     descripcion:
       "Sofá modular de cinco piezas inspirado en la vastedad patagónica. Configuración en L con chaise longue integrada. Módulos independientes que permiten reconfigurar el sillón según el espacio.",
     precio: 520000,
-    imagen: "catalogo/Sofá Patagonia.png",
+    imagen: "catalogo/sofa-patagonia.png",
   },
 ];
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { API_URL } from './useProductos';
 
-// C6 - Pide UN producto a GET /api/productos/:id y devuelve la misma
+// Pide UN producto a GET /api/productos/:id y devuelve la misma
 // tripleta que useProductos (producto, loading, error) más un flag
 // noEncontrado para poder distinguir el 404 del resto de los errores:
 // un 404 significa que el producto no existe, mientras que error es un

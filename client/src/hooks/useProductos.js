@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 
-// C3: la URL base sale de VITE_API_URL. Si no está definida queda vacía y
-// el fetch va a /api/productos en el mismo origen (proxy de Vite).
+// La URL base sale de VITE_API_URL, que es obligatoria (ver .env.example).
+// Sin ella el fetch apuntaría al mismo origen, que es el servidor de Vite y
+// no la API.
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-// C4 - Pide el catálogo a GET /api/productos y expone los tres estados
+// Pide el catálogo a GET /api/productos y expone los tres estados
 // (productos, loading y error) más una función para reintentar.
 const useProductos = () => {
   const [productos, setProductos] = useState([]);

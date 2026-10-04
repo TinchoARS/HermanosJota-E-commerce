@@ -7,12 +7,12 @@ import useProducto from '../hooks/useProducto';
 import '../styles/catalogo.css';
 import '../styles/producto-detalle.css';
 
-// F7 + C6 - Vista de detalle de un producto.
+// Vista de detalle de un producto.
 // Recibe el producto que venía en la lista (de ahí saca el id para pedirlo
 // de nuevo a la API) y los callbacks que ejecuta App.jsx: onVolver para
 // regresar al catálogo y onAgregar para sumar al carrito.
 const ProductDetail = ({ producto, onVolver, onAgregar }) => {
-  // C6 - Los datos definitivos vienen de GET /api/productos/:id, no de la lista.
+  // Los datos definitivos vienen de GET /api/productos/:id, no de la lista.
   const { producto: detalle, loading, error, noEncontrado, recargar } = useProducto(producto?.id);
 
   // El botón "Volver" tiene que estar disponible en todos los estados,
@@ -23,7 +23,7 @@ const ProductDetail = ({ producto, onVolver, onAgregar }) => {
     </button>
   );
 
-  // C6 - El backend respondió 404: el producto ya no existe.
+  // El backend respondió 404: el producto ya no existe.
   if (noEncontrado) {
     return (
       <section className="catalogo-estado" role="alert">
@@ -34,7 +34,7 @@ const ProductDetail = ({ producto, onVolver, onAgregar }) => {
     );
   }
 
-  // C6 - Falló la conexión o el servidor devolvió algo distinto de 200.
+  // Falló la conexión o el servidor devolvió algo distinto de 200.
   if (error) {
     return (
       <section className="catalogo-estado" role="alert">

@@ -129,7 +129,7 @@ body {
   .navbar-cart-btn:hover {
     background-color: #8B4513; 
   }
-  /* --- ESTILOS DEL FOOTER (TASK F4) --- */
+  /* --- ESTILOS DEL FOOTER --- */
 .footer-container {
   background-color: var(--siena-tostado, #A0522D);
   color: var(--alabastro-calido, #F5E6D3);
@@ -183,7 +183,7 @@ body {
   font-size: 0.85rem;
   font-weight: 300;
 }
-/* --- ESTILOS DEL FORMULARIO DE CONTACTO (TASK F8) --- */
+/* --- ESTILOS DEL FORMULARIO DE CONTACTO --- */
 .contact-section {
   max-width: 600px;
   margin: 4rem auto;
