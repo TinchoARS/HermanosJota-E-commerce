@@ -25,6 +25,8 @@ La API expone el catálogo y lo consume el frontend con `fetch` a través de hoo
 - **CORS con lista de orígenes permitidos** en lugar de `cors()` abierto: el frontend puede consultar la API, pero otras páginas que el usuario tenga abiertas en el navegador no.
 - **Imágenes servidas por el backend** desde `public/catalogo`, y no desde el frontend, para que todo el catálogo viva en un solo lado.
 - **Carrito simulado, sin persistencia ni checkout.** Es una simulación de estado: el contador vive en `App.jsx` y no hay backend de carritos.
+- **Lógica en hooks propios y `App.jsx` como orquestador.** El catálogo (`useProductos`), el carrito (`useCarrito`) y la navegación entre vistas (`useNavegacion`) están en hooks separados. `App.jsx` los llama y reparte los datos por props, así queda chico y cada parte se puede leer sola. El estado del carrito sigue viviendo en `App`, porque un hook guarda su estado en el componente que lo usa.
+- **Navegación sin router.** El catálogo y el detalle son vistas que `App.jsx` alterna con renderizado condicional, como pide la consigna. Por eso los links del navbar no son anclas comunes: si el usuario está en el detalle, primero se vuelve al catálogo y después se scrollea a la sección.
 - **Datos en un array de JavaScript**, según lo que pide la consigna. Cuando haya base de datos, se reemplaza ese archivo y el resto de la app no cambia.
 
 ---
@@ -43,11 +45,12 @@ La API expone el catálogo y lo consume el frontend con `fetch` a través de hoo
 
 **Frontend**
 
-- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto) y botón de carrito con el contador de productos agregados.
+- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto) y botón de carrito con el contador de productos agregados. Queda fijo arriba al scrollear, así el carrito está siempre a la vista, y en celular se acomoda en dos filas. Los links funcionan desde cualquier vista, incluido el detalle.
+- **Hero:** banner de bienvenida con imagen, título y botón "Ver catálogo".
 - **Catálogo de productos:** grilla de tarjetas con imagen, nombre y precio en formato ARS. Incluye estados de carga (spinner), de error con botón "Reintentar" y de lista vacía.
-- **Detalle de producto:** imagen grande, nombre, descripción completa y precio, con los botones "Agregar al carrito" y "Volver al catálogo". El producto se pide a la API por id y maneja el 404 mostrando "Producto no encontrado".
-- **Carrito de compras:** contador visible en el navbar, manejado con estado de React. Es una simulación: no hay persistencia ni checkout.
-- **Formulario de contacto:** formulario controlado, validación simple de campos obligatorios, mensaje de éxito y limpieza al enviar.
+- **Detalle de producto:** imagen grande, nombre, descripción completa y precio, con los botones "Agregar al carrito" y "Volver al catálogo". El producto se pide a la API por id y maneja el 404 mostrando "Producto no encontrado". Al volver, el catálogo recupera la posición de scroll en la que estaba.
+- **Carrito de compras:** contador visible en el navbar, manejado con estado de React. Al agregar un producto aparece un aviso flotante que se ve sin importar dónde esté la página y se oculta solo. Es una simulación: no hay persistencia ni checkout.
+- **Formulario de contacto:** formulario controlado con validación propia: campos obligatorios (no acepta solo espacios) y formato de email, con el error debajo de cada campo. Al enviar muestra un mensaje de éxito en la página y limpia los campos.
 - **Footer:** datos de contacto, redes sociales y copyright.
 
 **Backend**
@@ -109,21 +112,26 @@ HermanosJota-E-commerce/
 │   ├── .env.example               # Plantilla de configuración
 │   ├── src/
 │   │   ├── main.jsx
-│   │   ├── App.jsx                # Renderizado condicional y estado del carrito
+│   │   ├── App.jsx                # Arma la página: conecta los hooks con los componentes
 │   │   ├── assets/
-│   │   │   └── logo.svg
+│   │   │   ├── logo.svg
+│   │   │   └── hero.png           # Imagen del banner
 │   │   ├── components/
 │   │   │   ├── Navbar.jsx
+│   │   │   ├── Hero.jsx
 │   │   │   ├── Footer.jsx
 │   │   │   ├── ContactForm.jsx
 │   │   │   ├── ProductList.jsx
 │   │   │   ├── ProductCard.jsx
-│   │   │   └── ProductDetail.jsx
+│   │   │   ├── ProductDetail.jsx
+│   │   │   └── AvisoCarrito.jsx   # Aviso flotante "se agregó al carrito"
 │   │   ├── hooks/
 │   │   │   ├── useProductos.js    # GET /api/productos
-│   │   │   └── useProducto.js     # GET /api/productos/:id
+│   │   │   ├── useProducto.js     # GET /api/productos/:id
+│   │   │   ├── useCarrito.js      # Estado del carrito y del aviso
+│   │   │   └── useNavegacion.js   # Vistas catálogo/detalle, secciones y scroll
 │   │   └── styles/
-│   │       ├── style.css          # Variables, navbar, footer y contacto
+│   │       ├── style.css          # Variables, navbar, hero, aviso, footer y contacto
 │   │       ├── catalogo.css       # Grilla y estados del catálogo
 │   │       └── producto-detalle.css
 │   └── package.json
@@ -195,13 +203,14 @@ El backend escucha en el **3000** y el frontend en el **5173**, así que no se p
 
 El **3000 se mantiene por decisión conjunta del grupo, siguiendo la recomendación de la profesora**. También se evaluaron el 8080 y el 3001, pero se eligió el 3000 por ser la convención de Node/Express y el indicado en el curso.
 
-Si en tu máquina el 3000 está ocupado, corré el backend con `PORT=4000 npm run dev` y poné `VITE_API_URL=http://localhost:4000` en tu `.env`.
+Si en tu máquina el 3000 está ocupado, corré el backend en otro puerto y poné `VITE_API_URL=http://localhost:4000` en tu `.env`:
 
----
+```bash
+PORT=4000 npm run dev            # macOS, Linux o Git Bash
+$env:PORT=4000; npm run dev      # Windows (PowerShell)
+```
 
-## 🌐 Ver el sitio en vivo
-
-_Pendiente de despliegue._
+En Windows, `cp .env.example .env` funciona en PowerShell y Git Bash. En cmd se usa `copy .env.example .env`.
 
 ---
 
