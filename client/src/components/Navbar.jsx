@@ -18,7 +18,7 @@ const Navbar = ({ cantidadCarrito, onNavegar }) => {
   };
 
   return (
-    <nav id="inicio" className="navbar">
+    <nav className="navbar">
       <div className="navbar-logo-container">
         <img src={logo} alt="Logo Hermanos Jota" className="navbar-logo-img" />
         <span className="navbar-brand-text">HERMANOS JOTA</span>

@@ -1,5 +1,7 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import AvisoCarrito from './components/AvisoCarrito';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
 import ContactForm from './components/ContactForm';
@@ -19,12 +21,26 @@ function App() {
   // para contar y evita duplicar en memoria los objetos completos.
   const [carrito, setCarrito] = useState([]);
 
+  // Aviso flotante del último producto agregado. null = no se muestra.
+  const [aviso, setAviso] = useState(null);
+
   // onAgregar baja desde ProductList y desde ProductDetail hasta acá.
   // Se usa la forma funcional de setState porque así React usa el valor
   // más reciente del carrito y no el del render en que se creó la función.
   const agregarAlCarrito = (producto) => {
     setCarrito((items) => [...items, producto.id]);
+    // Date.now() como id: cada agregado es un aviso nuevo, aunque sea el
+    // mismo producto, así se reinicia el temporizador y la animación.
+    setAviso({ id: Date.now(), nombre: producto.nombre });
   };
+
+  // El aviso se oculta solo a los 2,5 s. Si se agrega otro antes, el cleanup
+  // cancela el temporizador anterior y arranca uno nuevo.
+  useEffect(() => {
+    if (!aviso) return;
+    const temporizador = setTimeout(() => setAviso(null), 2500);
+    return () => clearTimeout(temporizador);
+  }, [aviso]);
 
   // Posición del scroll en el catálogo al entrar a un detalle, para
   // devolver al usuario al mismo lugar cuando vuelve. null = nada guardado.
@@ -93,18 +109,21 @@ function App() {
             onAgregar={agregarAlCarrito}
           />
         ) : (
-          // El id va acá y no en ProductList para que el link "Catálogo"
-          // funcione también mientras carga o si la API falló.
-          <div id="catalogo">
-            <ProductList
-              productos={productos}
-              loading={loading}
-              error={error}
-              onReintentar={recargar}
-              onSeleccionar={verDetalle}
-              onAgregar={agregarAlCarrito}
-            />
-          </div>
+          <>
+            <Hero onVerCatalogo={() => navegar('catalogo')} />
+            {/* El id va acá y no en ProductList para que el link "Catálogo"
+                funcione también mientras carga o si la API falló. */}
+            <div id="catalogo">
+              <ProductList
+                productos={productos}
+                loading={loading}
+                error={error}
+                onReintentar={recargar}
+                onSeleccionar={verDetalle}
+                onAgregar={agregarAlCarrito}
+              />
+            </div>
+          </>
         )}
 
         {/* Fuera del condicional a propósito: el contacto está en las dos
@@ -113,6 +132,8 @@ function App() {
       </main>
 
       <Footer />
+
+      <AvisoCarrito aviso={aviso} />
     </>
   );
 }
