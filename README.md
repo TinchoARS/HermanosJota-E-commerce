@@ -1,6 +1,6 @@
 # 🛋️ E-commerce Mueblería Hermanos Jota
 
-Sitio web de e-commerce para una mueblería, desarrollado como proyecto grupal de la facultad. Permite navegar un catálogo de muebles, ver el detalle de cada producto, agregarlos a un carrito de compras simulado y contactar a la tienda mediante un formulario.
+Sitio web de e-commerce para una mueblería, desarrollado como proyecto grupal del curso Full Stack Developer (ITBA). Permite navegar un catálogo de muebles, ver el detalle de cada producto, agregarlos a un carrito de compras simulado y contactar a la tienda mediante un formulario.
 
 A diferencia de la primera versión del proyecto, los datos ya no viven en un array dentro del navegador: el frontend es una aplicación React que consume una API REST propia, con el catálogo servido desde el backend.
 
