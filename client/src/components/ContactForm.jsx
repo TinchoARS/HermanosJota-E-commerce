@@ -1,44 +1,74 @@
-import React, { useState } from 'react';
-import '../styles/style.css'; // Asegurate de que la ruta a tus estilos sea correcta
+import { useState } from 'react';
+
+const VALORES_INICIALES = { nombre: '', email: '', mensaje: '' };
+
+// Formato básico de email: algo@algo.algo, sin espacios.
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Devuelve un objeto { campo: mensaje } con los errores. Vacío = válido.
+// Se usa trim() porque un campo con solo espacios pasa el `required` del HTML.
+const validar = ({ nombre, email, mensaje }) => {
+  const errores = {};
+  if (!nombre.trim()) errores.nombre = 'Ingresá tu nombre.';
+  if (!email.trim()) {
+    errores.email = 'Ingresá tu correo electrónico.';
+  } else if (!EMAIL_REGEX.test(email.trim())) {
+    errores.email = 'El correo electrónico no es válido.';
+  }
+  if (!mensaje.trim()) errores.mensaje = 'Escribí tu mensaje.';
+  return errores;
+};
 
 const ContactForm = () => {
-  // Estado inicializado para controlar los campos del formulario
-  const [formData, setFormData] = useState({
-    nombre: '',
-    email: '',
-    mensaje: ''
-  });
+  // Estado controlado de los campos del formulario.
+  const [formData, setFormData] = useState(VALORES_INICIALES);
+  const [errores, setErrores] = useState({});
+  // Nombre de quien envió, para el mensaje de éxito. null = no se envió.
+  const [enviadoPor, setEnviadoPor] = useState(null);
 
-  // Manejador para actualizar el estado cada vez que el usuario escribe
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData((datos) => ({ ...datos, [name]: value }));
+    // Al corregir un campo se borra su error, y si empieza a escribir de
+    // nuevo el mensaje de éxito ya no corresponde.
+    setErrores((actuales) => ({ ...actuales, [name]: undefined }));
+    setEnviadoPor(null);
   };
 
-  // Función que se ejecuta al enviar el formulario
   const handleSubmit = (e) => {
     e.preventDefault(); // Evita que la página se recargue
 
-    // Validación simple: verificar que todos los campos tengan contenido
-    if (!formData.nombre.trim() || !formData.email.trim() || !formData.mensaje.trim()) {
-      alert('Por favor, completá todos los campos antes de enviar.');
+    const nuevosErrores = validar(formData);
+    setErrores(nuevosErrores);
+    if (Object.keys(nuevosErrores).length > 0) {
+      setEnviadoPor(null);
       return;
     }
 
-    // Mensaje de éxito
-    alert(`¡Gracias por tu mensaje, ${formData.nombre}! Nos pondremos en contacto a la brevedad.`);
-    
-    // Limpieza del formulario volviendo al estado inicial
-    setFormData({ nombre: '', email: '', mensaje: '' });
+    // No hay backend para el contacto: el envío se simula.
+    console.log('Mensaje de contacto:', formData);
+    setEnviadoPor(formData.nombre.trim());
+    setFormData(VALORES_INICIALES);
   };
 
+  // Props comunes de accesibilidad para cada campo según tenga error o no.
+  const propsError = (campo) => ({
+    'aria-invalid': Boolean(errores[campo]),
+    'aria-describedby': errores[campo] ? `${campo}-error` : undefined,
+  });
+
+  const mensajeError = (campo) =>
+    errores[campo] && (
+      <span id={`${campo}-error`} className="form-error">{errores[campo]}</span>
+    );
+
   return (
-    <section className="contact-section">
+    <section id="contacto" className="contact-section">
       <h2 className="contact-title">Contactanos</h2>
-      <form className="contact-form" onSubmit={handleSubmit}>
-        
+
+      {/* noValidate: la validación la hace validar(), así los mensajes son
+          los mismos en todos los navegadores. */}
+      <form className="contact-form" onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="nombre">Nombre Completo</label>
           <input
@@ -47,10 +77,11 @@ const ContactForm = () => {
             name="nombre"
             value={formData.nombre}
             onChange={handleChange}
-            required
+            {...propsError('nombre')}
           />
+          {mensajeError('nombre')}
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="email">Correo Electrónico</label>
           <input
@@ -59,8 +90,9 @@ const ContactForm = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            required
+            {...propsError('email')}
           />
+          {mensajeError('email')}
         </div>
 
         <div className="form-group">
@@ -71,11 +103,19 @@ const ContactForm = () => {
             rows="5"
             value={formData.mensaje}
             onChange={handleChange}
-            required
+            {...propsError('mensaje')}
           ></textarea>
+          {mensajeError('mensaje')}
         </div>
 
         <button type="submit" className="submit-btn">Enviar Mensaje</button>
+
+        {/* role="status" hace que los lectores de pantalla anuncien el
+            mensaje sin mover el foco. */}
+        <p className="contact-exito" role="status">
+          {enviadoPor &&
+            `¡Gracias por tu mensaje, ${enviadoPor}! Nos pondremos en contacto a la brevedad.`}
+        </p>
       </form>
     </section>
   );

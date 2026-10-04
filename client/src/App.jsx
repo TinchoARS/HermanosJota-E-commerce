@@ -37,6 +37,30 @@ function App() {
   };
   const volverAlCatalogo = () => setProductoSeleccionado(null);
 
+  // Sección a la que hay que ir después de cambiar de vista (ver navegar).
+  const seccionPendiente = useRef(null);
+
+  const irASeccion = (seccion) => {
+    if (seccion === 'inicio') {
+      window.scrollTo(0, 0);
+    } else {
+      document.getElementById(seccion)?.scrollIntoView();
+    }
+  };
+
+  // onNavegar desde Navbar. Contacto existe en las dos vistas, pero Inicio y
+  // Catálogo son del catálogo: desde el detalle primero se vuelve a la lista
+  // y el scroll se hace en el useLayoutEffect, cuando ya está en el DOM.
+  const navegar = (seccion) => {
+    if (productoSeleccionado && seccion !== 'contacto') {
+      seccionPendiente.current = seccion;
+      scrollCatalogo.current = null;
+      setProductoSeleccionado(null);
+    } else {
+      irASeccion(seccion);
+    }
+  };
+
   // Al cambiar de vista, el navegador mantiene el scroll anterior: el
   // detalle aparecía a mitad de página. Se lleva el detalle arriba de todo y,
   // al volver, se restaura la posición guardada del catálogo.
@@ -46,6 +70,9 @@ function App() {
   useLayoutEffect(() => {
     if (productoSeleccionado) {
       window.scrollTo(0, 0);
+    } else if (seccionPendiente.current !== null) {
+      irASeccion(seccionPendiente.current);
+      seccionPendiente.current = null;
     } else if (scrollCatalogo.current !== null) {
       window.scrollTo(0, scrollCatalogo.current);
       scrollCatalogo.current = null;
@@ -54,7 +81,7 @@ function App() {
 
   return (
     <>
-      <Navbar cantidadCarrito={carrito.length} />
+      <Navbar cantidadCarrito={carrito.length} onNavegar={navegar} />
 
       <main>
         {/* Renderizado condicional: detalle si hay algo seleccionado,
@@ -66,16 +93,22 @@ function App() {
             onAgregar={agregarAlCarrito}
           />
         ) : (
-          <ProductList
-            productos={productos}
-            loading={loading}
-            error={error}
-            onReintentar={recargar}
-            onSeleccionar={verDetalle}
-            onAgregar={agregarAlCarrito}
-          />
+          // El id va acá y no en ProductList para que el link "Catálogo"
+          // funcione también mientras carga o si la API falló.
+          <div id="catalogo">
+            <ProductList
+              productos={productos}
+              loading={loading}
+              error={error}
+              onReintentar={recargar}
+              onSeleccionar={verDetalle}
+              onAgregar={agregarAlCarrito}
+            />
+          </div>
         )}
 
+        {/* Fuera del condicional a propósito: el contacto está en las dos
+            vistas, así el link "Contacto" funciona también desde el detalle. */}
         <ContactForm />
       </main>
 

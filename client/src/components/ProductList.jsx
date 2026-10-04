@@ -36,7 +36,7 @@ const ProductList = ({ productos, onSeleccionar, onAgregar, loading = false, err
   }
 
   return (
-    <section id="catalogo" className="catalogo">
+    <section className="catalogo">
       <h2 className="catalogo-titulo">Catálogo</h2>
       <div className="catalogo-grilla">
         {productos.map((p) => (

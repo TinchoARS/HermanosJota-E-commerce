@@ -1,8 +1,24 @@
 import logo from '../assets/logo.svg';
 
-const Navbar = ({ cantidadCarrito }) => {
+// Secciones a las que lleva el menú. El id es el del elemento destino.
+const SECCIONES = [
+  { id: 'inicio', texto: 'INICIO' },
+  { id: 'catalogo', texto: 'CATÁLOGO' },
+  { id: 'contacto', texto: 'CONTACTO' },
+];
+
+const Navbar = ({ cantidadCarrito, onNavegar }) => {
+  // La app no tiene router: el catálogo y el detalle son vistas de App.jsx.
+  // Un href="#catalogo" pelado no funciona desde el detalle porque ese id no
+  // está montado, así que se deja que App decida (volver al catálogo y
+  // después scrollear). El href queda para abrir en otra pestaña o copiar.
+  const handleClick = (e, seccion) => {
+    e.preventDefault();
+    onNavegar(seccion);
+  };
+
   return (
-    <nav className="navbar">
+    <nav id="inicio" className="navbar">
       <div className="navbar-logo-container">
         <img src={logo} alt="Logo Hermanos Jota" className="navbar-logo-img" />
         <span className="navbar-brand-text">HERMANOS JOTA</span>
@@ -10,9 +26,11 @@ const Navbar = ({ cantidadCarrito }) => {
 
       <div className="navbar-menu">
         <ul className="navbar-links">
-          <li><a href="#inicio">INICIO</a></li>
-          <li><a href="#catalogo">CATÁLOGO</a></li>
-          <li><a href="#contacto">CONTACTO</a></li>
+          {SECCIONES.map(({ id, texto }) => (
+            <li key={id}>
+              <a href={`#${id}`} onClick={(e) => handleClick(e, id)}>{texto}</a>
+            </li>
+          ))}
         </ul>
         <button className="navbar-cart-btn">
           {/* Ícono de carrito blanco */}

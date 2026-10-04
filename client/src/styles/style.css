@@ -251,3 +251,27 @@ body {
 .submit-btn:hover {
   background-color: var(--verde-salvia, #87A96B); /* Al pasar el mouse */
 }
+/* Error de validación debajo de cada campo */
+.form-error {
+  margin-top: 0.4rem;
+  font-size: var(--font-size-leyendas);
+  color: var(--color-rosa-polvoriento);
+}
+
+.form-group input[aria-invalid='true'],
+.form-group textarea[aria-invalid='true'] {
+  border-color: var(--color-rosa-polvoriento);
+}
+
+/* Mensaje de éxito al enviar. Vacío no ocupa lugar. */
+.contact-exito:empty {
+  display: none;
+}
+
+.contact-exito {
+  padding: 1rem;
+  border-left: 4px solid var(--color-verde-salvia);
+  background-color: rgba(135, 169, 107, 0.15);
+  color: var(--color-siena-tostado);
+  border-radius: 4px;
+}
