@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const VALORES_INICIALES = { nombre: '', email: '', mensaje: '' };
+
+// Tiempo que queda visible el mensaje de éxito antes de borrarse solo.
+const DURACION_EXITO_MS = 60 * 1000;
 
 // Formato básico de email: algo@algo.algo, sin espacios.
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,12 +22,40 @@ const validar = ({ nombre, email, mensaje }) => {
   return errores;
 };
 
-const ContactForm = () => {
+// vista identifica la vista actual (catálogo o el detalle de un producto).
+// ContactForm se muestra en las dos y no se desmonta al cambiar, así que la
+// usa para saber cuándo borrar el mensaje de éxito.
+const ContactForm = ({ vista }) => {
   // Estado controlado de los campos del formulario.
   const [formData, setFormData] = useState(VALORES_INICIALES);
   const [errores, setErrores] = useState({});
   // Nombre de quien envió, para el mensaje de éxito. null = no se envió.
   const [enviadoPor, setEnviadoPor] = useState(null);
+
+  // El mensaje de éxito se borra solo pasado DURACION_EXITO_MS.
+  useEffect(() => {
+    if (!enviadoPor) return;
+    const timer = setTimeout(() => setEnviadoPor(null), DURACION_EXITO_MS);
+    return () => clearTimeout(timer);
+  }, [enviadoPor]);
+
+  // También se borra al pasar a otra vista (entrar o salir de un producto).
+  // Se compara con la vista anterior durante el render, que es lo que
+  // recomienda React en vez de un useEffect para resetear estado por props.
+  const [vistaAnterior, setVistaAnterior] = useState(vista);
+  if (vista !== vistaAnterior) {
+    setVistaAnterior(vista);
+    setEnviadoPor(null);
+  }
+
+  // Y al cambiar de pestaña del navegador.
+  useEffect(() => {
+    const alCambiarDePestana = () => {
+      if (document.hidden) setEnviadoPor(null);
+    };
+    document.addEventListener('visibilitychange', alCambiarDePestana);
+    return () => document.removeEventListener('visibilitychange', alCambiarDePestana);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

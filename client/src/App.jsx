@@ -57,8 +57,9 @@ function App() {
         )}
 
         {/* Fuera del condicional a propósito: el contacto está en las dos
-            vistas, así el link "Contacto" funciona también desde el detalle. */}
-        <ContactForm />
+            vistas, así el link "Contacto" funciona también desde el detalle.
+            vista le avisa cuándo se cambió de vista. */}
+        <ContactForm vista={productoSeleccionado?.id ?? 'catalogo'} />
       </main>
 
       <Footer />
