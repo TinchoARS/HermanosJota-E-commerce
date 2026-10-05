@@ -34,6 +34,14 @@ const guardarCarrito = (carrito) => {
   }
 };
 
+// Devuelve una copia del carrito sin ese producto. Copia y no delete sobre el
+// original porque el estado de React no se modifica en el lugar.
+const sinProducto = (carrito, id) => {
+  const copia = { ...carrito };
+  delete copia[id];
+  return copia;
+};
+
 // Estado del carrito y del aviso "se agregó al carrito".
 // Se llama desde App.jsx, así que el estado vive en App (un hook guarda su
 // estado en el componente que lo usa): el contador, el listado y el total bajan
@@ -53,15 +61,31 @@ const useCarrito = (productos = []) => {
     guardarCarrito(carrito);
   }, [carrito]);
 
-  // onAgregar baja desde ProductList y desde ProductDetail hasta acá.
+  // onAgregar baja desde ProductList y desde ProductDetail hasta acá. El
+  // catálogo agrega de a uno; el detalle manda la cantidad elegida.
   // Se usa la forma funcional de setState porque así React usa el valor
   // más reciente del carrito y no el del render en que se creó la función.
-  const agregarAlCarrito = (producto) => {
-    setCarrito((items) => ({ ...items, [producto.id]: (items[producto.id] || 0) + 1 }));
+  const agregarAlCarrito = (producto, cantidad = 1) => {
+    setCarrito((items) => ({ ...items, [producto.id]: (items[producto.id] || 0) + cantidad }));
     // Date.now() como id: cada agregado es un aviso nuevo, aunque sea el
     // mismo producto, así se reinicia el temporizador y la animación.
-    setAviso({ id: Date.now(), nombre: producto.nombre });
+    setAviso({ id: Date.now(), nombre: producto.nombre, cantidad });
   };
+
+  // Botones + y − del panel del carrito. Si la cantidad llega a 0 el producto
+  // sale del carrito, igual que con quitarDelCarrito.
+  const cambiarCantidad = (id, diferencia) => {
+    setCarrito((items) => {
+      const nuevaCantidad = (items[id] || 0) + diferencia;
+      return nuevaCantidad > 0 ? { ...items, [id]: nuevaCantidad } : sinProducto(items, id);
+    });
+  };
+
+  const quitarDelCarrito = (id) => setCarrito((items) => sinProducto(items, id));
+
+  // Finalizar la compra es una simulación: no hay backend de pedidos, así que
+  // solo se vacía el carrito.
+  const vaciarCarrito = () => setCarrito({});
 
   // Para mostrarlo se cruzan las cantidades guardadas con el catálogo. Si un id
   // guardado ya no corresponde a ningún producto se ignora en lugar de romper
@@ -97,7 +121,16 @@ const useCarrito = (productos = []) => {
     return () => clearTimeout(temporizador);
   }, [aviso]);
 
-  return { items, cantidad, total, aviso, agregarAlCarrito };
+  return {
+    items,
+    cantidad,
+    total,
+    aviso,
+    agregarAlCarrito,
+    cambiarCantidad,
+    quitarDelCarrito,
+    vaciarCarrito,
+  };
 };
 
 export default useCarrito;

@@ -32,8 +32,8 @@ app.use(
 app.use(logger);
 app.use(express.json());
 
-// Archivos estáticos: lo que está en public/catalogo/x.png se pide como
-// GET /catalogo/x.png. Va antes del 404 para que las imágenes no caigan en
+// Archivos estáticos: lo que está en public/catalogo/x.webp se pide como
+// GET /catalogo/x.webp. Va antes del 404 para que las imágenes no caigan en
 // ese handler. Se usa __dirname y no una ruta relativa porque el directorio
 // de trabajo cambia según desde dónde se levante el servidor.
 app.use(express.static(path.join(__dirname, 'public')));

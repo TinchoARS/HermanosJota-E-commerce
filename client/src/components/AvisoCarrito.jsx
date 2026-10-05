@@ -8,7 +8,11 @@ const AvisoCarrito = ({ aviso }) => {
         // key distinta en cada agregado: React vuelve a montar el <p> y la
         // animación de entrada se repite aunque el aviso ya estuviera visible.
         <p key={aviso.id} className="aviso-carrito__texto">
-          ✓ <strong>{aviso.nombre}</strong> se agregó al carrito
+          {aviso.cantidad > 1 ? (
+            <>✓ <strong>{aviso.cantidad} × {aviso.nombre}</strong> se agregaron al carrito</>
+          ) : (
+            <>✓ <strong>{aviso.nombre}</strong> se agregó al carrito</>
+          )}
         </p>
       )}
     </div>

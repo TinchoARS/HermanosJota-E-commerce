@@ -19,6 +19,70 @@
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 2rem;
   }
+
+/* --- BÚSQUEDA Y ORDEN --- */
+.catalogo-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin: -0.75rem 0 2rem;
+}
+
+.catalogo-control {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+
+.catalogo-control--busqueda {
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.catalogo-control input,
+.catalogo-control select {
+  font-family: var(--font-principal);
+  font-size: 0.9rem;
+  color: var(--color-siena-tostado);
+  background-color: white;
+  border: 1px solid rgba(160, 82, 45, 0.3);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  transition: border-color 0.2s;
+}
+
+/* Lupa dibujada como fondo del input (SVG en línea, mismo trazo que el
+   ícono del carrito), así no hace falta un elemento extra. */
+.catalogo-control input {
+  width: 100%;
+  padding-left: 2.3rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A0522D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.75rem center;
+  background-size: 1rem;
+}
+
+.catalogo-control input::placeholder {
+  color: rgba(160, 82, 45, 0.6);
+}
+
+.catalogo-control input:focus,
+.catalogo-control select:focus {
+  outline: none;
+  border-color: var(--color-verde-salvia);
+}
+
+.catalogo-control select {
+  cursor: pointer;
+}
+
+.catalogo-resultados {
+  margin-left: auto;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
   
  /* --- TARJETA --- */
 .product-card {
@@ -184,4 +248,52 @@
 .product-card.scroll-visible {
   animation: aparecerDesdeAbajo 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   visibility: visible;
+}
+
+/* --- MOBILE: dos columnas --- */
+/* Con una sola columna, recorrer los 11 productos era mucho scroll. Con dos
+   se ve más como una tienda; los botones van uno debajo del otro porque no
+   entran lado a lado. */
+@media (max-width: 600px) {
+  .catalogo {
+    padding: 2rem 4%;
+  }
+
+  .catalogo-grilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .product-card-body {
+    padding: 0.8rem;
+    gap: 0.3rem;
+  }
+
+  .product-card-nombre {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .product-card-precio {
+    font-size: 0.9rem;
+  }
+
+  .product-card-acciones {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .product-card-acciones .btn {
+    padding: 0.55rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .catalogo-control--busqueda {
+    max-width: none;
+  }
+
+  .catalogo-resultados {
+    margin-left: 0;
+  }
 }

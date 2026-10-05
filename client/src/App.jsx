@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import AvisoCarrito from './components/AvisoCarrito';
@@ -17,8 +18,22 @@ function App() {
   const { productos, loading, error, recargar } = useProductos();
   // El carrito recibe el catálogo porque guarda solo los ids y las cantidades:
   // los nombres y los precios se resuelven contra productos.
-  const { items, cantidad, total, aviso, agregarAlCarrito } = useCarrito(productos);
-  const { productoSeleccionado, verDetalle, volverAlCatalogo, navegar } = useNavegacion();
+  const {
+    items,
+    cantidad,
+    total,
+    aviso,
+    agregarAlCarrito,
+    cambiarCantidad,
+    quitarDelCarrito,
+    vaciarCarrito,
+  } = useCarrito(productos);
+  const { productoId, verDetalle, volverAlCatalogo, navegar } = useNavegacion();
+
+  // Búsqueda y orden del catálogo. Viven acá y no en ProductList porque la
+  // lista se desmonta al entrar a un detalle, y al volver el usuario espera
+  // encontrar el catálogo como lo dejó.
+  const [filtros, setFiltros] = useState({ busqueda: '', orden: 'destacados' });
 
   return (
     <>
@@ -27,14 +42,22 @@ function App() {
         itemsCarrito={items}
         totalCarrito={total}
         onNavegar={navegar}
+        onCambiarCantidad={cambiarCantidad}
+        onQuitarDelCarrito={quitarDelCarrito}
+        onFinalizarCompra={vaciarCarrito}
       />
 
       <main>
-        {/* Renderizado condicional: detalle si hay algo seleccionado,
+        {/* Renderizado condicional: detalle si la URL apunta a un producto,
             catálogo en cualquier otro caso. */}
-        {productoSeleccionado ? (
+        {productoId !== null ? (
           <ProductDetail
-            producto={productoSeleccionado}
+            // key: al pasar de un producto a otro el detalle arranca de cero
+            // (por ejemplo, la cantidad vuelve a 1).
+            key={productoId}
+            id={productoId}
+            // Si la lista ya llegó, el detalle la usa para pintar al instante.
+            productoInicial={productos.find((p) => p.id === productoId)}
             onVolver={volverAlCatalogo}
             onAgregar={agregarAlCarrito}
           />
@@ -51,6 +74,8 @@ function App() {
                 onReintentar={recargar}
                 onSeleccionar={verDetalle}
                 onAgregar={agregarAlCarrito}
+                filtros={filtros}
+                onCambiarFiltros={setFiltros}
               />
             </div>
           </>
@@ -59,7 +84,7 @@ function App() {
         {/* Fuera del condicional a propósito: el contacto está en las dos
             vistas, así el link "Contacto" funciona también desde el detalle.
             vista le avisa cuándo se cambió de vista. */}
-        <ContactForm vista={productoSeleccionado?.id ?? 'catalogo'} />
+        <ContactForm vista={productoId ?? 'catalogo'} />
       </main>
 
       <Footer />

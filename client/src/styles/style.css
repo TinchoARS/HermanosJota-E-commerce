@@ -7,6 +7,10 @@
   --color-alabastro-calido: #F5E6D3;
   --color-vara-de-oro: #D4A437;
   --color-rosa-polvoriento: #C47A6D;
+  /* Para errores de formulario. El rosa polvoriento sobre el alabastro no
+     llega al contraste mínimo para texto (4,5:1); este tono de la misma
+     familia da ~6,6:1. */
+  --color-error: #8E2F22;
 
   /* Tipografía primaria: Inter — cuerpo, UI, apps digitales */
   --font-principal: 'Inter', sans-serif;
@@ -62,10 +66,18 @@ body {
   top: 0;
   z-index: 10;
   
-  /* Efecto Glassmorphism */
-  background-color: rgba(245, 230, 211, 0.85); /* Alabastro cálido con 85% de opacidad */
+  /* Efecto Glassmorphism. Con 85% de opacidad se leían los títulos y botones
+     que pasaban por debajo del logo; con 96% el vidrio se nota apenas y la
+     barra queda limpia. */
+  background-color: rgba(245, 230, 211, 0.96);
   backdrop-filter: blur(12px); /* El desenfoque tipo vidrio */
   -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
+  transition: box-shadow 0.3s ease;
+}
+
+/* Al scrollear, una sombra suave separa la barra del contenido. */
+.navbar--scrolleado {
+  box-shadow: 0 4px 18px rgba(60, 30, 15, 0.08);
 }
 
 /* --- LOGO Y MARCA --- */
@@ -218,10 +230,10 @@ color: inherit;
   color: var(--color-verde-salvia);
 }
 
-.carrito-panel__vacio {
+/* Carrito vacío o compra finalizada. */
+.carrito-panel__mensaje {
   padding: 0.9rem 0 0.2rem;
   font-size: 0.85rem;
-  opacity: 0.8;
 }
 
 /* Con muchos productos la lista scrollea y el total queda siempre visible. */
@@ -229,23 +241,53 @@ color: inherit;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  max-height: 15rem;
+  max-height: 18rem;
   overflow-y: auto;
-  padding: 0.6rem 0;
+  padding: 0.3rem 0;
 }
 
+/* Cada producto en dos filas: nombre y precio arriba, controles abajo. */
 .carrito-panel__item {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 0;
   font-size: 0.85rem;
 }
 
-/* La cantidad va pegada al nombre, atenuada para no competir con el precio. */
-.carrito-panel__cantidad {
-  margin-left: 0.3rem;
-  opacity: 0.65;
+.carrito-panel__item + .carrito-panel__item {
+  border-top: 1px dashed rgba(160, 82, 45, 0.18);
+}
+
+.carrito-panel__fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.carrito-panel__quitar {
+  background: none;
+  border: none;
+  padding: 0.2rem 0;
+  font-family: var(--font-principal);
+  font-size: 0.8rem;
+  color: var(--color-siena-tostado);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.carrito-panel__quitar:hover {
+  opacity: 1;
+}
+
+.carrito-panel__finalizar {
+  width: 100%;
+  margin-top: 0.9rem;
+  padding: 0.75rem 1rem;
 }
 
 .carrito-panel__precio {
@@ -288,7 +330,68 @@ color: inherit;
   
   border: 2px solid rgba(245, 230, 211, 0.9);
   /* Oscurecemos apenas la sombra para que se despegue más del botón */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.25); 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+}
+
+/* --- SELECTOR DE CANTIDAD (panel del carrito y detalle) --- */
+.cantidad {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(160, 82, 45, 0.35);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cantidad__btn {
+  width: 1.8rem;
+  height: 1.8rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-siena-tostado);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cantidad__btn:hover:not(:disabled) {
+  background-color: rgba(160, 82, 45, 0.1);
+}
+
+.cantidad__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cantidad__valor {
+  min-width: 1.8rem;
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+}
+
+.cantidad--grande .cantidad__btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.2rem;
+}
+
+.cantidad--grande .cantidad__valor {
+  min-width: 2.5rem;
+  font-size: 1rem;
+}
+
+/* Texto solo para lectores de pantalla (por ejemplo, el label del buscador,
+   que en pantalla se entiende por el placeholder y la lupa). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 /* --- ESTILOS DEL FOOTER --- */
 .footer-container {
@@ -322,20 +425,36 @@ color: inherit;
   text-transform: uppercase;
 }
 
-.footer-section p {
-  margin: 0.8rem 0;
-  font-size: 0.95rem;
-  font-weight: 300;
+.footer-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
-.footer-section a {
-  color: var(--alabastro-calido, #F5E6D3);
+.footer-enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--color-alabastro-calido);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.footer-section a:hover {
-  color: var(--verde-salvia, #87A96B);
+.footer-enlace:hover {
+  /* Sobre el siena, el verde salvia queda con poco contraste; se marca el
+     hover con un subrayado y el dorado de la marca. */
+  color: var(--color-vara-de-oro);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-icono {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .footer-bottom {
@@ -419,13 +538,16 @@ color: inherit;
 /* Error de validación debajo de cada campo */
 .form-error {
   margin-top: 0.4rem;
-  font-size: var(--font-size-leyendas);
-  color: var(--color-rosa-polvoriento);
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-error);
 }
 
 .form-group input[aria-invalid='true'],
 .form-group textarea[aria-invalid='true'] {
-  border-color: var(--color-rosa-polvoriento);
+  border: 2px solid var(--color-error);
+  /* Compensa el borde más grueso para que el campo no "salte". */
+  padding: calc(1rem - 1px);
 }
 
 /* Mensaje de éxito al enviar. Vacío no ocupa lugar. */
@@ -557,24 +679,34 @@ color: inherit;
 }
 
 /* =========================================
-   MOBILE: navbar en dos filas y hero legible
+   TABLET Y MOBILE: navbar en dos filas
    ========================================= */
-@media (max-width: 700px) {
-  /* En mobile el header vuelve a flex de dos filas: logo + carrito arriba,
-     links abajo. El grid de 3 columnas no entra en un teléfono. */
+/* Debajo de 900px el header vuelve a flex de dos filas: logo + carrito
+   arriba, links abajo. El grid de 3 columnas necesita unos 850px: entre 700
+   y 850 la marca, el carrito y los links quedaban pegados entre sí. */
+@media (max-width: 900px) {
   .navbar {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     row-gap: 0.75rem;
+    /* Separación mínima entre la marca y el carrito: sin esto, en
+       pantallas de 375px el texto quedaba pegado al botón. */
+    column-gap: 1rem;
     padding: 0.75rem 5%;
   }
 
+  .navbar-logo-container {
+    gap: 0.6rem;
+  }
+
   .navbar-logo-img {
-    width: 36px;
+    width: 32px;
   }
 
   .navbar-brand-text {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
   }
 
   .navbar-carrito {
@@ -597,13 +729,23 @@ color: inherit;
   .navbar-links {
     order: 2;
     width: 100%;
-    justify-content: space-between;
-    gap: 1rem;
+    justify-content: center;
+    gap: 2.5rem;
   }
 
   #catalogo,
   #contacto {
     scroll-margin-top: 120px;
+  }
+}
+
+/* =========================================
+   MOBILE: links repartidos y hero legible
+   ========================================= */
+@media (max-width: 700px) {
+  .navbar-links {
+    justify-content: space-between;
+    gap: 1rem;
   }
 
   .hero {
@@ -613,6 +755,16 @@ color: inherit;
       var(--hero-img);
   }
 }
+
+/* En teléfonos muy angostos (320px) la marca y el botón no entran en una
+   fila: el botón queda solo con el ícono y el contador. El texto "Carrito"
+   lo sigue leyendo el lector de pantalla por el aria-label del botón. */
+@media (max-width: 360px) {
+  .navbar-cart-label {
+    display: none;
+  }
+}
+
 /* =========================================
    ANIMACIONES DE ENTRADA
    ========================================= */

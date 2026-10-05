@@ -37,9 +37,11 @@ La API expone el catálogo y lo consume el frontend con `fetch` a través de hoo
 - **Puerto 3000 para la API**, por decisión del grupo siguiendo la recomendación de la profesora. También se evaluaron el 8080 y el 3001.
 - **CORS con lista de orígenes permitidos** en lugar de `cors()` abierto: el frontend puede consultar la API, pero otras páginas que el usuario tenga abiertas en el navegador no.
 - **Imágenes servidas por el backend** desde `public/catalogo`, y no desde el frontend, para que todo el catálogo viva en un solo lado.
-- **Carrito simulado, sin persistencia ni checkout.** Es una simulación de estado: el contador vive en `App.jsx` y no hay backend de carritos.
+- **Imágenes en WebP.** Las originales eran PNG de 1024×1024 y sumaban casi 6 MB. Se pasaron a WebP de 800×800, que pesan unos 50 KB cada una (589 KB en total), así el catálogo carga rápido también en el celular.
+- **Carrito simulado, con persistencia en el navegador.** El estado vive en `App.jsx` (a través de `useCarrito`) y se guarda en `localStorage`, así sobrevive a una recarga. No hay backend de carritos ni de pedidos: "Finalizar compra" vacía el carrito y muestra un agradecimiento.
 - **Lógica en hooks propios y `App.jsx` como orquestador.** El catálogo (`useProductos`), el carrito (`useCarrito`) y la navegación entre vistas (`useNavegacion`) están en hooks separados. `App.jsx` los llama y reparte los datos por props, así queda chico y cada parte se puede leer sola. El estado del carrito sigue viviendo en `App`, porque un hook guarda su estado en el componente que lo usa.
-- **Navegación sin router.** El catálogo y el detalle son vistas que `App.jsx` alterna con renderizado condicional, como pide la consigna. Por eso los links del navbar no son anclas comunes: si el usuario está en el detalle, primero se vuelve al catálogo y después se scrollea a la sección.
+- **Navegación sin router, con el producto en la URL.** El catálogo y el detalle son vistas que `App.jsx` alterna con renderizado condicional, como pide la consigna. Para que el detalle tenga su propio link, el producto abierto se guarda en el hash de la URL (`/#producto-3`): el link se puede compartir y el botón "atrás" del navegador vuelve al catálogo, sin sumar React Router. Los links del navbar no son anclas comunes: si el usuario está en el detalle, primero se vuelve al catálogo y después se scrollea a la sección.
+- **Búsqueda y orden en `App`, no en `ProductList`.** La lista se desmonta al entrar a un detalle; si el filtro viviera ahí, al volver se perdería la búsqueda y el orden que había elegido el usuario.
 - **Datos en un array de JavaScript**, según lo que pide la consigna. Cuando haya base de datos, se reemplaza ese archivo y el resto de la app no cambia.
 - **Carrito en el centro del header y con la palabra "Carrito" al lado del ícono.** Fue una decisión del grupo a partir de las correcciones de la primera entrega: el ícono quedaba aislado en el extremo derecho y se leía como un detalle menor. Centrado en la barra y con texto al lado, el carrito pasa a ser una sección más de la tienda.
 - **Imagen en el home.** El home arrancaba solo con texto. Se agregó un banner con una imagen y un botón de "Ver catálogo", con el objetivo de darle mayor impacto al usuario en la primera impresión. La imagen se importa como módulo desde React y se le pasa al CSS como variable, para que el degradado que garantiza el contraste del texto quede en la hoja de estilos.
@@ -60,13 +62,14 @@ La API expone el catálogo y lo consume el frontend con `fetch` a través de hoo
 
 **Frontend**
 
-- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto) y botón de carrito en el centro de la barra, con ícono, la palabra "Carrito" y el contador de productos agregados. Queda fijo arriba al scrollear, así el carrito esté siempre a la vista, y en celular se acomoda en dos filas. Los links funcionan desde cualquier vista, incluido el detalle.
+- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto) y botón de carrito en el centro de la barra, con ícono, la palabra "Carrito" y el contador de productos agregados. Queda fijo arriba al scrollear y suma una sombra suave para separarse del contenido. En tablet y celular se acomoda en dos filas. Los links funcionan desde cualquier vista, incluido el detalle.
 - **Hero:** banner de bienvenida con imagen, título y botón "Ver catálogo".
-- **Catálogo de productos:** grilla de tarjetas con imagen, nombre y precio en formato ARS. Incluye estados de carga (spinner), de error con botón "Reintentar" y de lista vacía.
-- **Detalle de producto:** imagen grande, nombre, descripción completa y precio, con los botones "Agregar al carrito" y "Volver al catálogo". El producto se pide a la API por id y maneja el 404 mostrando "Producto no encontrado". Al volver, el catálogo recupera la posición de scroll en la que estaba.
-- **Carrito de compras:** contador visible en el navbar, manejado con estado de React. Al agregar un producto aparece un aviso flotante que se ve sin importar dónde esté la página y se oculta solo. Es una simulación: no hay persistencia ni checkout.
-- **Formulario de contacto:** formulario controlado con validación propia: campos obligatorios (no acepta solo espacios) y formato de email, con el error debajo de cada campo. Al enviar muestra un mensaje de éxito en la página y limpia los campos.
-- **Footer:** datos de contacto, redes sociales y copyright.
+- **Catálogo de productos:** grilla de tarjetas con imagen, nombre y precio en formato ARS (dos columnas en el celular). Tiene buscador por nombre (sin importar mayúsculas ni tildes: "cordoba" encuentra "Sillas Córdoba"), orden por precio o por nombre y contador de resultados. Incluye estados de carga (spinner), de error con botón "Reintentar", de lista vacía y de búsqueda sin resultados.
+- **Detalle de producto:** miga de pan, imagen grande, nombre, descripción completa, precio y selector de cantidad, con los botones "Agregar al carrito" y "Volver al catálogo". Aparece al instante con los datos que ya trajo el catálogo y se actualiza con `GET /api/productos/:id`; si el producto no existe muestra "Producto no encontrado". Cada producto tiene su link (`/#producto-3`) y el "atrás" del navegador vuelve al catálogo, en la misma posición de scroll.
+- **Carrito de compras:** contador en el navbar y panel desplegable con cada producto, su cantidad (con botones + y −), el botón "Quitar", el total y "Finalizar compra" (simulado). Se cierra con Escape o al hacer clic afuera. Se guarda en `localStorage`, así no se pierde al recargar. Al agregar aparece un aviso flotante que se oculta solo.
+- **Formulario de contacto:** formulario controlado con validación propia: campos obligatorios (no acepta solo espacios) y formato de email, con el error debajo de cada campo. Al fallar la validación, el foco va al primer campo a corregir. Al enviar muestra un mensaje de éxito que se borra solo al minuto, al cambiar de vista o al cambiar de pestaña.
+- **Footer:** datos de contacto y redes con íconos SVG. Todos son links: la dirección abre Google Maps, el WhatsApp abre el chat y el email abre el correo.
+- **Vista previa al compartir:** `meta description` y etiquetas Open Graph, así el link muestra título, descripción e imagen en WhatsApp y redes.
 
 **Backend**
 
@@ -118,21 +121,24 @@ HermanosJota-E-commerce/
 │   ├── data/
 │   │   └── productos.js           # Catálogo hardcodeado (11 productos)
 │   ├── public/
-│   │   └── catalogo/              # Imágenes servidas como archivos estáticos
+│   │   └── catalogo/              # Imágenes (WebP) servidas como archivos estáticos
 │   └── package.json
 │
 ├── client/
-│   ├── index.html
+│   ├── index.html                 # Incluye la meta description y las etiquetas Open Graph
 │   ├── vite.config.js
 │   ├── .env.example               # Plantilla de configuración
+│   ├── public/
+│   │   └── og-image.jpg           # Imagen de la vista previa al compartir el link
 │   ├── src/
 │   │   ├── main.jsx
 │   │   ├── App.jsx                # Arma la página: conecta los hooks con los componentes
 │   │   ├── assets/
 │   │   │   ├── logo.svg
-│   │   │   └── hero.png           # Imagen del banner
+│   │   │   └── hero.webp          # Imagen del banner
 │   │   ├── components/
 │   │   │   ├── Navbar.jsx
+│   │   │   ├── CarritoPanel.jsx   # Panel desplegable del carrito
 │   │   │   ├── Hero.jsx
 │   │   │   ├── Footer.jsx
 │   │   │   ├── ContactForm.jsx
@@ -143,8 +149,8 @@ HermanosJota-E-commerce/
 │   │   ├── hooks/
 │   │   │   ├── useProductos.js    # GET /api/productos
 │   │   │   ├── useProducto.js     # GET /api/productos/:id
-│   │   │   ├── useCarrito.js      # Estado del carrito y del aviso
-│   │   │   └── useNavegacion.js   # Vistas catálogo/detalle, secciones y scroll
+│   │   │   ├── useCarrito.js      # Estado del carrito (persistido) y del aviso
+│   │   │   └── useNavegacion.js   # Vistas catálogo/detalle (hash de la URL), secciones y scroll
 │   │   └── styles/
 │   │       ├── style.css          # Variables, navbar, hero, aviso, footer y contacto
 │   │       ├── catalogo.css       # Grilla y estados del catálogo
@@ -156,14 +162,14 @@ HermanosJota-E-commerce/
 
 ## 🔌 Endpoints de la API
 
-Base: `http://localhost:3000`
+Base local: `http://localhost:3000` · En producción: `https://hermanosjota-api-livid.vercel.app`
 
 | Método | Ruta | Descripción | Respuesta |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/` | Health check | `200` — mensaje de la API |
 | `GET` | `/api/productos` | Lista todos los productos | `200` — array con los 11 productos |
 | `GET` | `/api/productos/:id` | Detalle de un producto | `200` — objeto · `400` — id no numérico · `404` — no existe |
-| `GET` | `/catalogo/:imagen` | Imagen del catálogo (archivo estático) | `200` — `image/png` |
+| `GET` | `/catalogo/:imagen` | Imagen del catálogo (archivo estático) | `200` — `image/webp` |
 
 Sobre `/api/productos` solo se admite `GET`: los demás métodos devuelven `405 Method Not Allowed`. Las rutas inexistentes devuelven `404` y los errores internos `500`, siempre en JSON.
 

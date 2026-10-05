@@ -1,7 +1,7 @@
 import { API_URL } from '../hooks/useProductos';
 
 // Tarjeta de un producto del catálogo.
-// imagen viene como ruta relativa ("catalogo/aparador-uspallata.png"), por
+// imagen viene como ruta relativa ("catalogo/aparador-uspallata.webp"), por
 // eso se arma la URL completa contra la API.
 const ProductCard = ({ producto, onSeleccionar, onAgregar }) => {
   const { nombre, precio, imagen } = producto;

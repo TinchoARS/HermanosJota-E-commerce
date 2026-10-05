@@ -1,4 +1,4 @@
-import heroImg from '../assets/hero.png';
+import heroImg from '../assets/hero.webp';
 // catalogo.css trae .btn y .btn-primario (ver el comentario en ProductDetail).
 import '../styles/catalogo.css';
 

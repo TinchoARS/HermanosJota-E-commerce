@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const VALORES_INICIALES = { nombre: '', email: '', mensaje: '' };
+
+// Orden de los campos en pantalla, para saber cuál es el primero con error.
+const CAMPOS = Object.keys(VALORES_INICIALES);
 
 // Tiempo que queda visible el mensaje de éxito antes de borrarse solo.
 const DURACION_EXITO_MS = 60 * 1000;
@@ -31,6 +34,7 @@ const ContactForm = ({ vista }) => {
   const [errores, setErrores] = useState({});
   // Nombre de quien envió, para el mensaje de éxito. null = no se envió.
   const [enviadoPor, setEnviadoPor] = useState(null);
+  const formRef = useRef(null);
 
   // El mensaje de éxito se borra solo pasado DURACION_EXITO_MS.
   useEffect(() => {
@@ -71,8 +75,12 @@ const ContactForm = ({ vista }) => {
 
     const nuevosErrores = validar(formData);
     setErrores(nuevosErrores);
-    if (Object.keys(nuevosErrores).length > 0) {
+    const primerCampoConError = CAMPOS.find((campo) => nuevosErrores[campo]);
+    if (primerCampoConError) {
       setEnviadoPor(null);
+      // El foco va al primer campo a corregir: en el celular evita buscarlo
+      // scrolleando, y el lector de pantalla lee su error.
+      formRef.current.elements[primerCampoConError].focus();
       return;
     }
 
@@ -99,7 +107,7 @@ const ContactForm = ({ vista }) => {
 
       {/* noValidate: la validación la hace validar(), así los mensajes son
           los mismos en todos los navegadores. */}
-      <form className="contact-form" onSubmit={handleSubmit} noValidate>
+      <form ref={formRef} className="contact-form" onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="nombre">Nombre Completo</label>
           <input
