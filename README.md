@@ -6,6 +6,19 @@ A diferencia de la primera versión del proyecto, los datos ya no viven en un ar
 
 ---
 
+## 🌐 Sitio online
+
+**👉 [hermanosjota-ecommerce-zeta.vercel.app](https://hermanosjota-ecommerce-zeta.vercel.app/)**
+
+| Parte | URL |
+| :--- | :--- |
+| Frontend | https://hermanosjota-ecommerce-zeta.vercel.app/ |
+| API | https://hermanosjota-api-livid.vercel.app/api/productos |
+
+Los dos están deployados en Vercel como proyectos separados: el frontend como sitio estático de Vite y la API como función de Express. El frontend sabe dónde está la API por la variable `VITE_API_URL`, y la API acepta pedidos del frontend porque su dominio está en `CORS_ORIGIN`.
+
+---
+
 ## 📋 Descripción del proyecto
 
 El proyecto está dividido en dos partes:
