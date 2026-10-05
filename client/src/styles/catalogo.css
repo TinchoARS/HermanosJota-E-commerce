@@ -1,0 +1,187 @@
+/* =========================================
+   CATÁLOGO: ProductList y ProductCard
+   ========================================= */
+   .catalogo {
+    padding: 3rem 5%;
+    animation: aparecerDesdeAbajo 0.8s ease-out forwards;
+  }
+  
+  .catalogo-titulo {
+    font-family: var(--font-secundaria);
+    font-weight: var(--font-weight-bold);
+    font-size: 2rem;
+    letter-spacing: var(--letter-spacing-titulos);
+    margin-bottom: 2rem;
+  }
+  
+  .catalogo-grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+  
+ /* --- TARJETA --- */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  /* Suavizamos el borde y redondeamos un poquito más las puntas */
+  border: 1px solid rgba(160, 82, 45, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  
+  /* Sombra base muy sutil para despegarla del fondo de la página */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  
+  /* Agregamos transform a la transición para que el movimiento sea fluido */
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.product-card:hover {
+  /* Sombra más amplia al pasar el mouse */
+  box-shadow: 0 16px 32px rgba(160, 82, 45, 0.15);
+  
+  /* Efecto físico de "flotar" hacia arriba */
+  transform: translateY(-6px);
+}
+  
+  .product-card-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background-color: var(--color-alabastro-calido);
+    cursor: pointer; /* Indicador de clic */
+    transition: transform 0.4s ease; /* Suaviza el zoom */
+  }
+  
+  /* Efecto zoom al pasar el mouse por la imagen */
+  .product-card-img:hover {
+    transform: scale(1.03);
+  }
+  
+  .product-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.5rem;
+    padding: 1.25rem;
+  }
+  
+  .product-card-nombre {
+    font-family: var(--font-secundaria);
+    font-size: 1.15rem;
+    cursor: pointer; /* Indicador de clic */
+    transition: color 0.2s ease; /* Suaviza el cambio de color */
+  }
+  
+  /* Cambio de color al pasar el mouse por el título */
+  .product-card-nombre:hover {
+    color: var(--color-verde-salvia);
+  }
+  
+  .product-card-precio {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-verde-salvia);
+  }
+  
+  .product-card-acciones {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+  
+  .product-card-acciones .btn {
+    flex: 1;
+  }
+  
+  /* --- BOTONES --- */
+  .btn {
+    padding: 0.6rem 1rem;
+    font-family: var(--font-principal);
+    font-weight: var(--font-weight-medium);
+    font-size: 0.85rem;
+    letter-spacing: var(--letter-spacing-ctas);
+    white-space: nowrap;
+    border-radius: 6px; /* Lo subimos a 6px para que acompañe el nuevo borde de la tarjeta */
+    cursor: pointer;
+    /* Agregamos 'transform 0.1s ease' para que el encogimiento sea súper rápido y responsivo */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
+  }
+  
+  /* ¡Esta es la magia táctil! */
+  .btn:active {
+    transform: scale(0.96);
+  }
+  
+  .btn-primario {
+    background-color: var(--color-siena-tostado);
+    color: white;
+    border: 1px solid var(--color-siena-tostado);
+  }
+  
+  .btn-primario:hover {
+    background-color: #8B4513;
+  }
+  
+  .btn-secundario {
+    background-color: transparent;
+    color: var(--color-siena-tostado);
+    border: 1px solid var(--color-siena-tostado);
+  }
+  
+  .btn-secundario:hover {
+    background-color: var(--color-siena-tostado);
+    color: white;
+  }
+  
+  /* --- ESTADOS: cargando, error y vacío --- */
+  .catalogo-estado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 4rem 5%;
+    text-align: center;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(160, 82, 45, 0.2);
+    border-top-color: var(--color-siena-tostado);
+    border-radius: 50%;
+    animation: girar 0.8s linear infinite;
+  }
+  
+  @keyframes girar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  /* --- ANIMACIÓN DE APARICIÓN AL HACER SCROLL --- */
+
+/* Keyframes de la animación (la misma que veníamos usando) */
+@keyframes aparecerDesdeAbajo {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estado inicial: las tarjetas arrancan invisibles y desplazadas hacia abajo */
+.product-card.scroll-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  visibility: hidden;
+}
+
+/* Estado final: cuando el observer detecta la tarjeta, se le agrega esta clase */
+.product-card.scroll-visible {
+  animation: aparecerDesdeAbajo 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  visibility: visible;
+}
