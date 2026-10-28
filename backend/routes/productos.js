@@ -1,6 +1,6 @@
-const express = require('express');
-const methodNotAllowed = require('../middlewares/methodNotAllowed');
-const { getProductos, getProductoPorId } = require('../controllers/productosController');
+import express from 'express';
+import methodNotAllowed from '../middlewares/methodNotAllowed.js';
+import { getProductos, getProductoPorId } from '../controllers/productosController.js';
 
 const router = express.Router();
 
@@ -10,4 +10,4 @@ router.get('/:id', getProductoPorId);
 router.all('/', methodNotAllowed);
 router.all('/:id', methodNotAllowed);
 
-module.exports = router;
+export default router;
