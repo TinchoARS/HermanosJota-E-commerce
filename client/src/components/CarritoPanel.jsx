@@ -1,16 +1,7 @@
 import { useState } from 'react';
+import formatPrice from '../utils/formatPrice';
 
-// Mismo formato que usan ProductCard y ProductDetail para no mostrar precios
-// con decimales.
-const formatearPrecio = (precio) =>
-  precio.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
-
-// Panel desplegable del carrito. Lo abre y lo cierra Navbar; los datos y las
-// acciones llegan por props desde useCarrito (vía App y Navbar).
 const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onFinalizarCompra, onCerrar }) => {
-  // La compra es simulada: al finalizar se vacía el carrito y se muestra un
-  // agradecimiento. Es estado del panel, así que al cerrarlo y volver a
-  // abrirlo arranca de nuevo.
   const [compraFinalizada, setCompraFinalizada] = useState(false);
 
   const finalizarCompra = () => {
@@ -39,13 +30,11 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
       <>
         <ul className="carrito-panel__lista">
           {items.map((item) => (
-            // Un solo registro por producto: la cantidad se cambia con los
-            // botones y el precio de la línea es precio × cantidad.
             <li key={item.id} className="carrito-panel__item">
               <div className="carrito-panel__fila">
                 <span className="carrito-panel__nombre">{item.nombre}</span>
                 <span className="carrito-panel__precio">
-                  {formatearPrecio(item.precio * item.cantidad)}
+                  {formatPrice(item.precio * item.cantidad)}
                 </span>
               </div>
 
@@ -84,7 +73,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
 
         <div className="carrito-panel__total">
           <span>Total de la compra</span>
-          <span>{formatearPrecio(total)}</span>
+          <span>{formatPrice(total)}</span>
         </div>
 
         <button type="button" className="btn btn-primario carrito-panel__finalizar" onClick={finalizarCompra}>

@@ -127,7 +127,7 @@ HermanosJota-E-commerce/
 ├── client/
 │   ├── index.html                 # Incluye la meta description y las etiquetas Open Graph
 │   ├── vite.config.js
-│   ├── .env.example               # Plantilla de configuración
+│   ├── .env                       # URL de la API (VITE_API_URL)
 │   ├── public/
 │   │   └── og-image.jpg           # Imagen de la vista previa al compartir el link
 │   ├── src/
@@ -146,9 +146,15 @@ HermanosJota-E-commerce/
 │   │   │   ├── ProductCard.jsx
 │   │   │   ├── ProductDetail.jsx
 │   │   │   └── AvisoCarrito.jsx   # Aviso flotante "se agregó al carrito"
+│   │   ├── config/
+│   │   │   └── api.js             # URL base de la API
+│   │   ├── services/
+│   │   │   └── productos.js       # Fetch a /api/productos y URL de las imágenes
+│   │   ├── utils/
+│   │   │   └── formatPrice.js     # Formato de precio en pesos
 │   │   ├── hooks/
-│   │   │   ├── useProductos.js    # GET /api/productos
-│   │   │   ├── useProducto.js     # GET /api/productos/:id
+│   │   │   ├── useProductos.js    # Estado del catálogo (usa services/productos)
+│   │   │   ├── useProducto.js     # Estado del detalle (usa services/productos)
 │   │   │   ├── useCarrito.js      # Estado del carrito (persistido) y del aviso
 │   │   │   └── useNavegacion.js   # Vistas catálogo/detalle (hash de la URL), secciones y scroll
 │   │   └── styles/
@@ -208,11 +214,10 @@ En **otra terminal**:
 ```bash
 cd client
 npm install
-cp .env.example .env
 npm run dev
 ```
 
-El paso `cp .env.example .env` **no es opcional**: el `.env` está en el `.gitignore`, así que cada quien tiene que crear el suyo con la dirección de la API.
+El `client/.env` viene en el repo con `VITE_API_URL=http://localhost:3000`, así que no hay que crear nada.
 
 Queda disponible en `http://localhost:5173`.
 
@@ -224,14 +229,12 @@ El backend escucha en el **3000** y el frontend en el **5173**, así que no se p
 
 El **3000 se mantiene por decisión conjunta del grupo, siguiendo la recomendación de la profesora**. También se evaluaron el 8080 y el 3001, pero se eligió el 3000 por ser la convención de Node/Express y el indicado en el curso.
 
-Si en tu máquina el 3000 está ocupado, corré el backend en otro puerto y poné `VITE_API_URL=http://localhost:4000` en tu `.env`:
+Si en tu máquina el 3000 está ocupado, corré el backend en otro puerto y poné `VITE_API_URL=http://localhost:4000` en `client/.env`:
 
 ```bash
 PORT=4000 npm run dev            # macOS, Linux o Git Bash
 $env:PORT=4000; npm run dev      # Windows (PowerShell)
 ```
-
-En Windows, `cp .env.example .env` funciona en PowerShell y Git Bash. En cmd se usa `copy .env.example .env`.
 
 ---
 

@@ -2,17 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 
 const VALORES_INICIALES = { nombre: '', email: '', mensaje: '' };
 
-// Orden de los campos en pantalla, para saber cuál es el primero con error.
 const CAMPOS = Object.keys(VALORES_INICIALES);
 
-// Tiempo que queda visible el mensaje de éxito antes de borrarse solo.
 const DURACION_EXITO_MS = 60 * 1000;
 
-// Formato básico de email: algo@algo.algo, sin espacios.
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Devuelve un objeto { campo: mensaje } con los errores. Vacío = válido.
-// Se usa trim() porque un campo con solo espacios pasa el `required` del HTML.
 const validar = ({ nombre, email, mensaje }) => {
   const errores = {};
   if (!nombre.trim()) errores.nombre = 'Ingresá tu nombre.';
@@ -25,34 +20,24 @@ const validar = ({ nombre, email, mensaje }) => {
   return errores;
 };
 
-// vista identifica la vista actual (catálogo o el detalle de un producto).
-// ContactForm se muestra en las dos y no se desmonta al cambiar, así que la
-// usa para saber cuándo borrar el mensaje de éxito.
 const ContactForm = ({ vista }) => {
-  // Estado controlado de los campos del formulario.
   const [formData, setFormData] = useState(VALORES_INICIALES);
   const [errores, setErrores] = useState({});
-  // Nombre de quien envió, para el mensaje de éxito. null = no se envió.
   const [enviadoPor, setEnviadoPor] = useState(null);
   const formRef = useRef(null);
 
-  // El mensaje de éxito se borra solo pasado DURACION_EXITO_MS.
   useEffect(() => {
     if (!enviadoPor) return;
     const timer = setTimeout(() => setEnviadoPor(null), DURACION_EXITO_MS);
     return () => clearTimeout(timer);
   }, [enviadoPor]);
 
-  // También se borra al pasar a otra vista (entrar o salir de un producto).
-  // Se compara con la vista anterior durante el render, que es lo que
-  // recomienda React en vez de un useEffect para resetear estado por props.
   const [vistaAnterior, setVistaAnterior] = useState(vista);
   if (vista !== vistaAnterior) {
     setVistaAnterior(vista);
     setEnviadoPor(null);
   }
 
-  // Y al cambiar de pestaña del navegador.
   useEffect(() => {
     const alCambiarDePestana = () => {
       if (document.hidden) setEnviadoPor(null);
@@ -64,33 +49,27 @@ const ContactForm = ({ vista }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((datos) => ({ ...datos, [name]: value }));
-    // Al corregir un campo se borra su error, y si empieza a escribir de
-    // nuevo el mensaje de éxito ya no corresponde.
     setErrores((actuales) => ({ ...actuales, [name]: undefined }));
     setEnviadoPor(null);
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Evita que la página se recargue
+    e.preventDefault();
 
     const nuevosErrores = validar(formData);
     setErrores(nuevosErrores);
     const primerCampoConError = CAMPOS.find((campo) => nuevosErrores[campo]);
     if (primerCampoConError) {
       setEnviadoPor(null);
-      // El foco va al primer campo a corregir: en el celular evita buscarlo
-      // scrolleando, y el lector de pantalla lee su error.
       formRef.current.elements[primerCampoConError].focus();
       return;
     }
 
-    // No hay backend para el contacto: el envío se simula.
     console.log('Mensaje de contacto:', formData);
     setEnviadoPor(formData.nombre.trim());
     setFormData(VALORES_INICIALES);
   };
 
-  // Props comunes de accesibilidad para cada campo según tenga error o no.
   const propsError = (campo) => ({
     'aria-invalid': Boolean(errores[campo]),
     'aria-describedby': errores[campo] ? `${campo}-error` : undefined,
@@ -105,8 +84,6 @@ const ContactForm = ({ vista }) => {
     <section id="contacto" className="contact-section">
       <h2 className="contact-title">Contactanos</h2>
 
-      {/* noValidate: la validación la hace validar(), así los mensajes son
-          los mismos en todos los navegadores. */}
       <form ref={formRef} className="contact-form" onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label htmlFor="nombre">Nombre Completo</label>
@@ -149,8 +126,6 @@ const ContactForm = ({ vista }) => {
 
         <button type="submit" className="submit-btn">Enviar Mensaje</button>
 
-        {/* role="status" hace que los lectores de pantalla anuncien el
-            mensaje sin mover el foco. */}
         <p className="contact-exito" role="status">
           {enviadoPor &&
             `¡Gracias por tu mensaje, ${enviadoPor}! Nos pondremos en contacto a la brevedad.`}

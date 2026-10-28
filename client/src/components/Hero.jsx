@@ -1,10 +1,6 @@
 import heroImg from '../assets/hero.webp';
-// catalogo.css trae .btn y .btn-primario (ver el comentario en ProductDetail).
 import '../styles/catalogo.css';
 
-// Banner de bienvenida arriba del catálogo. Es el destino del link "Inicio".
-// La imagen se pasa como variable CSS para que el degradado que asegura el
-// contraste del texto quede definido en el CSS y no acá.
 const Hero = ({ onVerCatalogo }) => {
   return (
     <section

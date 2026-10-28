@@ -1,6 +1,3 @@
-// Íconos en SVG en vez de emojis: los emojis cambian de dibujo y de color
-// según el sistema, y estos toman el color del texto (currentColor).
-// Trazos de Feather Icons (licencia MIT), como el ícono del carrito.
 const Icono = ({ children }) => (
   <svg
     className="footer-icono"
@@ -51,8 +48,6 @@ const ICONOS = {
   ),
 };
 
-// Datos de contacto. Todos son links: la dirección abre el mapa, el WhatsApp
-// abre el chat y el email abre el cliente de correo.
 const CONTACTO = [
   {
     icono: 'ubicacion',
@@ -68,7 +63,6 @@ const REDES = [
   { icono: 'web', texto: 'www.hermanosjota.com.ar', href: 'https://www.hermanosjota.com.ar' },
 ];
 
-// mailto no abre una pestaña nueva; el resto son sitios externos.
 const Enlace = ({ icono, texto, href }) => {
   const externo = href.startsWith('http');
   return (

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import logo from '../assets/logo.svg';
 import CarritoPanel from './CarritoPanel';
 
-// Secciones a las que lleva el menú. El id es el del elemento destino.
 const SECCIONES = [
   { id: 'inicio', texto: 'INICIO' },
   { id: 'catalogo', texto: 'CATÁLOGO' },
@@ -18,14 +17,10 @@ const Navbar = ({
   onQuitarDelCarrito,
   onFinalizarCompra,
 }) => {
-  // Si el panel del carrito está desplegado. Es estado solo de la vista, así que
-  // vive acá y no en App: los datos del carrito siguen llegando por props.
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   const contenedorCarrito = useRef(null);
   const botonCarrito = useRef(null);
 
-  // Si la página está scrolleada, la barra suma una sombra para separarse
-  // del contenido que pasa por debajo.
   const [scrolleado, setScrolleado] = useState(false);
 
   useEffect(() => {
@@ -35,20 +30,11 @@ const Navbar = ({
     return () => window.removeEventListener('scroll', actualizar);
   }, []);
 
-  // La app no tiene router: el catálogo y el detalle son vistas de App.jsx.
-  // Un href="#catalogo" pelado no funciona desde el detalle porque ese id no
-  // está montado, así que se deja que App decida (volver al catálogo y
-  // después scrollear). El href queda para abrir en otra pestaña o copiar.
   const handleClick = (e, seccion) => {
     e.preventDefault();
     onNavegar(seccion);
   };
 
-  // Cierra el panel al hacer clic fuera de él o con Escape. El botón está
-  // dentro del contenedor, así que el toggle no lo dispara este listener.
-  // Se escucha pointerdown y no click: botones como "Quitar" desaparecen del
-  // DOM al hacer clic, y para cuando llega el click ya no están dentro del
-  // contenedor, así que el panel se cerraría solo.
   useEffect(() => {
     if (!carritoAbierto) return;
     const handleClickFuera = (e) => {
@@ -59,7 +45,6 @@ const Navbar = ({
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
         setCarritoAbierto(false);
-        // El foco vuelve al botón que abrió el panel, para no perderse.
         botonCarrito.current?.focus();
       }
     };
@@ -82,8 +67,6 @@ const Navbar = ({
         <span className="navbar-brand-text">HERMANOS JOTA</span>
       </a>
 
-      {/* El carrito va en el medio del header: el grid de 3 columnas lo centra
-          entre el logo (izquierda) y el menú (derecha). */}
       <div className="navbar-carrito" ref={contenedorCarrito}>
         <button
           ref={botonCarrito}
@@ -108,7 +91,6 @@ const Navbar = ({
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
           <span className="navbar-cart-label">Carrito</span>
-          {/* Badge flotante con la cantidad de unidades */}
           <span className="cart-badge">{cantidadCarrito}</span>
         </button>
 

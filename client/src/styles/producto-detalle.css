@@ -1,10 +1,5 @@
-/* =========================================
-   Detalle de producto
-   ========================================= */
 .producto-detalle {
   display: grid;
-  /* minmax(0, 1fr) en vez de 1fr: sin esto un img con ancho natural
-     estira la columna y rompe la grilla en pantallas chicas. */
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 3rem;
   align-items: start;
@@ -63,7 +58,6 @@
   align-items: center;
 }
 
-/* Miga de pan: ocupa todo el ancho de la grilla, arriba de imagen e info. */
 .producto-detalle__miga {
   grid-column: 1 / -1;
   margin-bottom: -1.5rem;
@@ -115,7 +109,6 @@
   font-weight: var(--font-weight-bold);
 }
 
-/* En pantallas chicas la grilla de dos columnas colapsa a una sola. */
 @media (max-width: 768px) {
   .producto-detalle {
     grid-template-columns: 1fr;

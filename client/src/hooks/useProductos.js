@@ -1,22 +1,13 @@
 import { useEffect, useState } from 'react';
+import { obtenerProductos } from '../services/productos';
 
-// La URL base sale de VITE_API_URL, que es obligatoria (ver .env.example).
-// Sin ella el fetch apuntaría al mismo origen, que es el servidor de Vite y
-// no la API.
-const API_URL = import.meta.env.VITE_API_URL || '';
-
-// Pide el catálogo a GET /api/productos y expone los tres estados
-// (productos, loading y error) más una función para reintentar.
 const useProductos = () => {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Cambiar este número vuelve a disparar el useEffect (botón "Reintentar").
   const [intento, setIntento] = useState(0);
 
   useEffect(() => {
-    // Si el componente se desmonta o se reintenta antes de que llegue la
-    // respuesta, se cancela la petición para no actualizar estado viejo.
     const controller = new AbortController();
 
     const cargarProductos = async () => {
@@ -24,14 +15,7 @@ const useProductos = () => {
       setError(null);
 
       try {
-        const res = await fetch(`${API_URL}/api/productos`, { signal: controller.signal });
-
-        // fetch solo falla si no hay red: un 404 o 500 hay que revisarlo con res.ok.
-        if (!res.ok) {
-          throw new Error(`El servidor respondió ${res.status}`);
-        }
-
-        const data = await res.json();
+        const data = await obtenerProductos(controller.signal);
         setProductos(data);
       } catch (err) {
         if (err.name === 'AbortError') return;
@@ -52,5 +36,4 @@ const useProductos = () => {
   return { productos, loading, error, recargar };
 };
 
-export { API_URL };
 export default useProductos;

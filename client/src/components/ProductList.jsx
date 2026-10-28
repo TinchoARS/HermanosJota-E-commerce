@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import '../styles/catalogo.css';
 
-// Opciones del selector de orden. "destacados" respeta el orden de la API.
 const ORDENES = [
   { valor: 'destacados', texto: 'Destacados' },
   { valor: 'precio-asc', texto: 'Precio: menor a mayor' },
@@ -10,7 +9,6 @@ const ORDENES = [
   { valor: 'nombre', texto: 'Nombre: A a Z' },
 ];
 
-// Pasa a minúsculas y saca los acentos, así "cordoba" encuentra "Córdoba".
 const normalizar = (texto) =>
   texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
@@ -22,12 +20,6 @@ const ordenar = (lista, orden) => {
   return copia;
 };
 
-// Grilla del catálogo con sus estados de carga, error y vacío, y la barra de
-// búsqueda y orden.
-// loading, error y onReintentar son opcionales: si no se pasan, el
-// componente solo renderiza la lista que recibe.
-// filtros y onCambiarFiltros vienen de App: si el estado viviera acá se
-// perdería al entrar a un detalle, porque ProductList se desmonta.
 const ProductList = ({
   productos,
   onSeleccionar,
@@ -48,33 +40,28 @@ const ProductList = ({
     return ordenar(filtrados, orden);
   }, [productos, busqueda, orden]);
 
-  // Este useEffect vigila cuándo aparecen las tarjetas al hacer scroll
   useEffect(() => {
-    // Si está cargando, hay error o no hay productos, el observer no hace falta
     if (loading || error || productosVisibles.length === 0) return;
 
     const observerOptions = {
       root: null,
-      rootMargin: '0px 0px -50px 0px', // Activa la animación un poquito antes de llegar al borde inferior
-      threshold: 0.1 // Se dispara cuando al menos el 10% de la tarjeta es visible
+      rootMargin: '0px 0px -50px 0px',
+      threshold: 0.1
     };
 
     const handleIntersect = (entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('scroll-visible');
-          observer.unobserve(entry.target); // Deja de vigilarla una vez que ya apareció
+          observer.unobserve(entry.target);
         }
       });
     };
 
     const observer = new IntersectionObserver(handleIntersect, observerOptions);
-    // Solo las que todavía no aparecieron: al buscar u ordenar, las tarjetas
-    // que ya estaban a la vista no repiten la animación en cada tecla.
     const cards = document.querySelectorAll('.product-card:not(.scroll-visible)');
 
     cards.forEach(card => {
-      // Las oculta por defecto para que la animación funcione correctamente al scrollear
       card.classList.add('scroll-hidden');
       observer.observe(card);
     });
@@ -139,7 +126,6 @@ const ProductList = ({
           </select>
         </label>
 
-        {/* aria-live: el lector de pantalla anuncia cuántos resultados quedan. */}
         <p className="catalogo-resultados" aria-live="polite">
           {productosVisibles.length === 1 ? '1 producto' : `${productosVisibles.length} productos`}
         </p>

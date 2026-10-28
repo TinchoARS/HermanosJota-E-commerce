@@ -7,4 +7,5 @@ Kit de imágenes/
 # Node
 node_modules/
 .env
+!client/.env
 npm-debug.log*

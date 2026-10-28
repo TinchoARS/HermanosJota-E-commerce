@@ -1,12 +1,3 @@
-// Catálogo hardcodeado. Fuente única de verdad para la API: el controller
-// importa este mismo array, así que no hay datos duplicados.
-//
-// Campos: id (identificador), nombre, descripcion, precio (en pesos, sin
-// símbolo) e imagen (ruta dentro de public/catalogo).
-//
-// Cuando haya base de datos, este archivo se reemplaza por consultas y el
-// resto de la app no necesita cambios.
-
 const productos = [
   {
     id: 1,

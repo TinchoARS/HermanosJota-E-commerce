@@ -1,30 +1,28 @@
-import { API_URL } from '../hooks/useProductos';
+import { urlImagen } from '../services/productos';
+import formatPrice from '../utils/formatPrice';
 
-// Tarjeta de un producto del catálogo.
-// imagen viene como ruta relativa ("catalogo/aparador-uspallata.webp"), por
-// eso se arma la URL completa contra la API.
 const ProductCard = ({ producto, onSeleccionar, onAgregar }) => {
   const { nombre, precio, imagen } = producto;
 
   return (
     <article className="product-card">
       <img
-        src={`${API_URL}/${encodeURI(imagen)}`}
+        src={urlImagen(imagen)}
         alt={nombre}
         className="product-card-img"
         loading="lazy"
-        onClick={() => onSeleccionar(producto)} // <-- Se agregó el evento click a la imagen
+        onClick={() => onSeleccionar(producto)}
       />
 
       <div className="product-card-body">
-        <h3 
-          className="product-card-nombre" 
-          onClick={() => onSeleccionar(producto)} // <-- Se agregó el evento click al título
+        <h3
+          className="product-card-nombre"
+          onClick={() => onSeleccionar(producto)}
         >
           {nombre}
         </h3>
         <p className="product-card-precio">
-          {precio.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+          {formatPrice(precio)}
         </p>
 
         <div className="product-card-acciones">
