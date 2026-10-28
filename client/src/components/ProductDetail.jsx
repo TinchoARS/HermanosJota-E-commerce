@@ -1,29 +1,25 @@
-import { API_URL } from '../hooks/useProductos';
+import { useState } from 'react';
 import useProducto from '../hooks/useProducto';
-// catalogo.css se importa acá también porque trae los estilos compartidos
-// (.btn, .btn-primario, .spinner, .catalogo-estado) y Vite solo carga el CSS
-// de los componentes que están montados: como ProductList se desmonta al ver
-// el detalle, sin este import los botones quedarían sin estilo.
+import { urlImagen } from '../services/productos';
+import formatPrice from '../utils/formatPrice';
 import '../styles/catalogo.css';
 import '../styles/producto-detalle.css';
 
-// Vista de detalle de un producto.
-// Recibe el producto que venía en la lista (de ahí saca el id para pedirlo
-// de nuevo a la API) y los callbacks que ejecuta App.jsx: onVolver para
-// regresar al catálogo y onAgregar para sumar al carrito.
-const ProductDetail = ({ producto, onVolver, onAgregar }) => {
-  // Los datos definitivos vienen de GET /api/productos/:id, no de la lista.
-  const { producto: detalle, loading, error, noEncontrado, recargar } = useProducto(producto?.id);
+const CANTIDAD_MAXIMA = 10;
 
-  // El botón "Volver" tiene que estar disponible en todos los estados,
-  // si no el usuario queda atrapado si la API falla.
+const ProductDetail = ({ id, productoInicial, onVolver, onAgregar }) => {
+  const { producto: detalle, error, noEncontrado, recargar } = useProducto(id);
+
+  const datos = detalle ?? productoInicial;
+
+  const [cantidad, setCantidad] = useState(1);
+
   const botonVolver = (
     <button type="button" className="btn btn-secundario" onClick={onVolver}>
       Volver al catálogo
     </button>
   );
 
-  // El backend respondió 404: el producto ya no existe.
   if (noEncontrado) {
     return (
       <section className="catalogo-estado" role="alert">
@@ -34,8 +30,7 @@ const ProductDetail = ({ producto, onVolver, onAgregar }) => {
     );
   }
 
-  // Falló la conexión o el servidor devolvió algo distinto de 200.
-  if (error) {
+  if (error && !datos) {
     return (
       <section className="catalogo-estado" role="alert">
         <p>{error}</p>
@@ -49,7 +44,7 @@ const ProductDetail = ({ producto, onVolver, onAgregar }) => {
     );
   }
 
-  if (loading || !detalle) {
+  if (!datos) {
     return (
       <section className="catalogo-estado" role="status">
         <span className="spinner" aria-hidden="true"></span>
@@ -59,13 +54,29 @@ const ProductDetail = ({ producto, onVolver, onAgregar }) => {
     );
   }
 
-  const { nombre, descripcion, precio, imagen } = detalle;
+  const { nombre, descripcion, precio, imagen } = datos;
+
+  const agregar = () => {
+    onAgregar(datos, cantidad);
+    setCantidad(1);
+  };
 
   return (
     <section className="producto-detalle">
+      <nav className="producto-detalle__miga" aria-label="Ubicación">
+        <ol>
+          <li>
+            <button type="button" className="producto-detalle__miga-link" onClick={onVolver}>
+              Catálogo
+            </button>
+          </li>
+          <li aria-current="page">{nombre}</li>
+        </ol>
+      </nav>
+
       <div className="producto-detalle__imagen">
         <img
-          src={`${API_URL}/${encodeURI(imagen)}`}
+          src={urlImagen(imagen)}
           alt={nombre}
           className="producto-detalle__img"
         />
@@ -74,7 +85,7 @@ const ProductDetail = ({ producto, onVolver, onAgregar }) => {
       <div className="producto-detalle__info">
         <h1 className="producto-detalle__nombre">{nombre}</h1>
         <p className="producto-detalle__precio">
-          {precio.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+          {formatPrice(precio)}
         </p>
 
         <div className="producto-detalle__seccion">
@@ -82,12 +93,33 @@ const ProductDetail = ({ producto, onVolver, onAgregar }) => {
           <p>{descripcion}</p>
         </div>
 
+        <div className="producto-detalle__compra">
+          <span className="producto-detalle__cantidad-label" id="cantidad-label">Cantidad</span>
+          <div className="cantidad cantidad--grande" role="group" aria-labelledby="cantidad-label">
+            <button
+              type="button"
+              className="cantidad__btn"
+              onClick={() => setCantidad((n) => n - 1)}
+              disabled={cantidad <= 1}
+              aria-label="Restar una unidad"
+            >
+              −
+            </button>
+            <span className="cantidad__valor" aria-live="polite">{cantidad}</span>
+            <button
+              type="button"
+              className="cantidad__btn"
+              onClick={() => setCantidad((n) => n + 1)}
+              disabled={cantidad >= CANTIDAD_MAXIMA}
+              aria-label="Sumar una unidad"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
         <div className="producto-detalle__acciones">
-          <button
-            type="button"
-            className="btn btn-primario"
-            onClick={() => onAgregar(detalle)}
-          >
+          <button type="button" className="btn btn-primario" onClick={agregar}>
             Agregar al carrito
           </button>
           {botonVolver}

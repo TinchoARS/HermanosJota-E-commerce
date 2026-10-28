@@ -1,6 +1,12 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-// Lleva al destino una sección de la página. Inicio es el tope de todo.
+const PREFIJO_PRODUCTO = 'producto-';
+
+const leerProductoDelHash = () => {
+  const coincidencia = window.location.hash.match(/^#producto-(\d+)$/);
+  return coincidencia ? Number(coincidencia[1]) : null;
+};
+
 const irASeccion = (seccion) => {
   if (seccion === 'inicio') {
     window.scrollTo(0, 0);
@@ -9,49 +15,58 @@ const irASeccion = (seccion) => {
   }
 };
 
-// Navegación entre las vistas de la app (catálogo y detalle) y entre las
-// secciones del navbar, con el manejo del scroll al cambiar de vista.
 const useNavegacion = () => {
-  // Vistas de la app. null = catálogo, un producto = su detalle.
-  // Se guarda el objeto entero (no solo el id) porque el detalle lo usa
-  // para pedir los datos frescos a la API y para pintar sin esperarlas.
-  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [productoId, setProductoId] = useState(leerProductoDelHash);
 
-  // Posición del scroll en el catálogo al entrar a un detalle, para
-  // devolver al usuario al mismo lugar cuando vuelve. null = nada guardado.
   const scrollCatalogo = useRef(null);
 
-  // Sección a la que hay que ir después de cambiar de vista (ver navegar).
   const seccionPendiente = useRef(null);
 
-  // onSeleccionar desde ProductList, onVolver desde ProductDetail.
-  const verDetalle = (producto) => {
-    scrollCatalogo.current = window.scrollY;
-    setProductoSeleccionado(producto);
-  };
-  const volverAlCatalogo = () => setProductoSeleccionado(null);
+  const vinoDelCatalogo = useRef(false);
 
-  // onNavegar desde Navbar. Contacto existe en las dos vistas, pero Inicio y
-  // Catálogo son del catálogo: desde el detalle primero se vuelve a la lista
-  // y el scroll se hace en el useLayoutEffect, cuando ya está en el DOM.
+  useEffect(() => {
+    window.history.scrollRestoration = 'manual';
+  }, []);
+
+  useEffect(() => {
+    const alCambiarHash = () => {
+      const id = leerProductoDelHash();
+      if (id !== null && document.getElementById('catalogo')) {
+        scrollCatalogo.current = window.scrollY;
+      }
+      setProductoId(id);
+    };
+    window.addEventListener('hashchange', alCambiarHash);
+    return () => window.removeEventListener('hashchange', alCambiarHash);
+  }, []);
+
+  const verDetalle = (producto) => {
+    vinoDelCatalogo.current = true;
+    window.location.hash = `${PREFIJO_PRODUCTO}${producto.id}`;
+  };
+
+  const volverAlCatalogo = () => {
+    if (vinoDelCatalogo.current) {
+      vinoDelCatalogo.current = false;
+      window.history.back();
+    } else {
+      window.history.pushState(null, '', window.location.pathname + window.location.search);
+      setProductoId(null);
+    }
+  };
+
   const navegar = (seccion) => {
-    if (productoSeleccionado && seccion !== 'contacto') {
+    if (productoId !== null && seccion !== 'contacto') {
       seccionPendiente.current = seccion;
       scrollCatalogo.current = null;
-      setProductoSeleccionado(null);
+      volverAlCatalogo();
     } else {
       irASeccion(seccion);
     }
   };
 
-  // Al cambiar de vista, el navegador mantiene el scroll anterior: el
-  // detalle aparecía a mitad de página. Se lleva el detalle arriba de todo y,
-  // al volver, se restaura la posición guardada del catálogo.
-  // Se usa useLayoutEffect y no useEffect porque corre cuando el DOM ya se
-  // actualizó pero antes de que el navegador pinte: así la vista nueva no se
-  // muestra un instante en la posición vieja antes de "saltar".
   useLayoutEffect(() => {
-    if (productoSeleccionado) {
+    if (productoId !== null) {
       window.scrollTo(0, 0);
     } else if (seccionPendiente.current !== null) {
       irASeccion(seccionPendiente.current);
@@ -60,9 +75,9 @@ const useNavegacion = () => {
       window.scrollTo(0, scrollCatalogo.current);
       scrollCatalogo.current = null;
     }
-  }, [productoSeleccionado]);
+  }, [productoId]);
 
-  return { productoSeleccionado, verDetalle, volverAlCatalogo, navegar };
+  return { productoId, verDetalle, volverAlCatalogo, navegar };
 };
 
 export default useNavegacion;
