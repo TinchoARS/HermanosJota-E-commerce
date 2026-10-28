@@ -1,10 +1,10 @@
-const productos = require('../data/productos');
+import productos from '../data/productos.js';
 
-function getProductos(req, res) {
+export function getProductos(req, res) {
   res.json(productos);
 }
 
-function getProductoPorId(req, res) {
+export function getProductoPorId(req, res) {
   const { id } = req.params;
 
   if (!/^\d+$/.test(id)) {
@@ -19,5 +19,3 @@ function getProductoPorId(req, res) {
 
   res.json(producto);
 }
-
-module.exports = { getProductos, getProductoPorId };
