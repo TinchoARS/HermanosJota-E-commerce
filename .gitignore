@@ -1,6 +1,12 @@
+# Archivos locales (no se suben)
+CLAUDE.md
+contexto_del_proyecto.md
+ManualDeMarca.pdf
+
 # Node
 node_modules/
 .env
+!client/.env
 .DS_Store
 npm-debug.log*
 yarn-debug.log*

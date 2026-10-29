@@ -20,7 +20,7 @@ const validar = ({ nombre, email, mensaje }) => {
   return errores;
 };
 
-const ContactForm = ({ vista }) => {
+const ContactForm = () => {
   const [formData, setFormData] = useState(VALORES_INICIALES);
   const [errores, setErrores] = useState({});
   const [enviadoPor, setEnviadoPor] = useState(null);
@@ -31,12 +31,6 @@ const ContactForm = ({ vista }) => {
     const timer = setTimeout(() => setEnviadoPor(null), DURACION_EXITO_MS);
     return () => clearTimeout(timer);
   }, [enviadoPor]);
-
-  const [vistaAnterior, setVistaAnterior] = useState(vista);
-  if (vista !== vistaAnterior) {
-    setVistaAnterior(vista);
-    setEnviadoPor(null);
-  }
 
   useEffect(() => {
     const alCambiarDePestana = () => {
