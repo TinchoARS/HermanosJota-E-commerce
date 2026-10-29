@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { obtenerProductos } from '../services/productos';
+import { listarProductos } from '../services/api';
 
 const useProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -15,7 +15,7 @@ const useProductos = () => {
       setError(null);
 
       try {
-        const data = await obtenerProductos(controller.signal);
+        const data = await listarProductos(controller.signal);
         setProductos(data);
       } catch (err) {
         if (err.name === 'AbortError') return;

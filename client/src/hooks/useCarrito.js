@@ -9,9 +9,8 @@ const leerCarrito = () => {
 
     const carrito = {};
     Object.entries(guardado).forEach(([id, cantidad]) => {
-      const idNumero = Number(id);
-      if (Number.isInteger(idNumero) && Number.isInteger(cantidad) && cantidad > 0) {
-        carrito[idNumero] = cantidad;
+      if (id && Number.isInteger(cantidad) && cantidad > 0) {
+        carrito[id] = cantidad;
       }
     });
     return carrito;
@@ -43,7 +42,7 @@ const useCarrito = (productos = []) => {
   }, [carrito]);
 
   const agregarAlCarrito = (producto, cantidad = 1) => {
-    setCarrito((items) => ({ ...items, [producto.id]: (items[producto.id] || 0) + cantidad }));
+    setCarrito((items) => ({ ...items, [producto._id]: (items[producto._id] || 0) + cantidad }));
     setAviso({ id: Date.now(), nombre: producto.nombre, cantidad });
   };
 
@@ -62,7 +61,7 @@ const useCarrito = (productos = []) => {
     () =>
       Object.entries(carrito)
         .map(([id, cantidad]) => {
-          const producto = productos.find((item) => item.id === Number(id));
+          const producto = productos.find((item) => item._id === id);
           return producto ? { ...producto, cantidad } : null;
         })
         .filter(Boolean),
@@ -74,7 +73,10 @@ const useCarrito = (productos = []) => {
     [items]
   );
 
-  const cantidad = Object.values(carrito).reduce((suma, n) => suma + n, 0);
+  const cantidad =
+    productos.length > 0
+      ? items.reduce((suma, item) => suma + item.cantidad, 0)
+      : Object.values(carrito).reduce((suma, n) => suma + n, 0);
 
   useEffect(() => {
     if (!aviso) return;
