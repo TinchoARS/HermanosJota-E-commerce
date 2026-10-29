@@ -140,6 +140,27 @@
     font-weight: var(--font-weight-bold);
     color: var(--color-verde-salvia);
   }
+
+  .product-card-stock {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .product-card-stock--agotado {
+    color: var(--color-error);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .btn:disabled,
+  .btn-primario:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primario:disabled:hover {
+    background-color: var(--color-siena-tostado);
+  }
   
   .product-card-acciones {
     display: flex;

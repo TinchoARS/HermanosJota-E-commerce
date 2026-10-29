@@ -3,8 +3,9 @@ import { urlImagen } from '../services/api';
 import formatPrice from '../utils/formatPrice';
 
 const ProductCard = ({ producto, onAgregar }) => {
-  const { _id, nombre, precio, imagenUrl } = producto;
+  const { _id, nombre, precio, imagenUrl, stock = 0 } = producto;
   const rutaDetalle = `/productos/${_id}`;
+  const sinStock = stock === 0;
 
   return (
     <article className="product-card">
@@ -24,6 +25,9 @@ const ProductCard = ({ producto, onAgregar }) => {
         <p className="product-card-precio">
           {formatPrice(precio)}
         </p>
+        <p className={`product-card-stock${sinStock ? ' product-card-stock--agotado' : ''}`}>
+          {sinStock ? 'Sin stock' : `Stock disponible: ${stock}`}
+        </p>
 
         <div className="product-card-acciones">
           <Link to={rutaDetalle} className="btn btn-secundario">
@@ -33,6 +37,7 @@ const ProductCard = ({ producto, onAgregar }) => {
             type="button"
             className="btn btn-primario"
             onClick={() => onAgregar(producto)}
+            disabled={sinStock}
           >
             Agregar
           </button>

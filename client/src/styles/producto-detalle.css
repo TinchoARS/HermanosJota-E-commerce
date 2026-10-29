@@ -38,6 +38,16 @@
   color: var(--color-verde-salvia);
 }
 
+.producto-detalle__stock {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.producto-detalle__stock--agotado {
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+}
+
 .producto-detalle__seccion h2 {
   font-family: var(--font-secundaria);
   font-size: 1.1rem;
