@@ -7,7 +7,7 @@ const errorHttp = (res) => {
   error.status = res.status;
   return error;
 };
-
+//
 const aProducto = ({ id, imagen, ...producto }) => ({
   ...producto,
   _id: producto._id ?? String(id),
@@ -48,4 +48,10 @@ export const urlImagen = (imagenUrl) => {
   if (!imagenUrl) return undefined;
   if (/^https?:\/\//i.test(imagenUrl)) return imagenUrl;
   return `${API_URL}/${encodeURI(imagenUrl.replace(/^\/+/, ''))}`;
+};
+
+// TODO(B4): simulado. Falta probar la eliminación (F6) contra el DELETE real.
+export const eliminarProducto = async (id) => {
+  await esperar(PAUSA_SIMULADA_MS);
+  return { success: true };
 };
