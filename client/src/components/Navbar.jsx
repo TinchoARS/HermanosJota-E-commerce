@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import CarritoPanel from './CarritoPanel';
 
 const SECCIONES = [
-  { id: 'inicio', texto: 'INICIO' },
-  { id: 'catalogo', texto: 'CATÁLOGO' },
-  { id: 'contacto', texto: 'CONTACTO' },
+  { ruta: '/', texto: 'INICIO', end: true },
+  { ruta: '/productos', texto: 'CATÁLOGO' },
+  { ruta: '/contacto', texto: 'CONTACTO' },
 ];
 
 const Navbar = ({
   cantidadCarrito,
   itemsCarrito = [],
   totalCarrito = 0,
-  onNavegar,
   onCambiarCantidad,
   onQuitarDelCarrito,
   onFinalizarCompra,
@@ -29,11 +29,6 @@ const Navbar = ({
     window.addEventListener('scroll', actualizar, { passive: true });
     return () => window.removeEventListener('scroll', actualizar);
   }, []);
-
-  const handleClick = (e, seccion) => {
-    e.preventDefault();
-    onNavegar(seccion);
-  };
 
   useEffect(() => {
     if (!carritoAbierto) return;
@@ -58,14 +53,10 @@ const Navbar = ({
 
   return (
     <nav className={`navbar${scrolleado ? ' navbar--scrolleado' : ''}`}>
-      <a 
-        href="#inicio" 
-        className="navbar-logo-container"
-        onClick={(e) => handleClick(e, 'inicio')}
-      >
+      <Link to="/" className="navbar-logo-container">
         <img src={logo} alt="Logo Hermanos Jota" className="navbar-logo-img" />
         <span className="navbar-brand-text">HERMANOS JOTA</span>
-      </a>
+      </Link>
 
       <div className="navbar-carrito" ref={contenedorCarrito}>
         <button
@@ -108,9 +99,9 @@ const Navbar = ({
       </div>
 
       <ul className="navbar-links">
-        {SECCIONES.map(({ id, texto }) => (
-          <li key={id}>
-            <a href={`#${id}`} onClick={(e) => handleClick(e, id)}>{texto}</a>
+        {SECCIONES.map(({ ruta, texto, end }) => (
+          <li key={ruta}>
+            <NavLink to={ruta} end={end}>{texto}</NavLink>
           </li>
         ))}
       </ul>

@@ -22,7 +22,6 @@ const ordenar = (lista, orden) => {
 
 const ProductList = ({
   productos,
-  onSeleccionar,
   onAgregar,
   loading = false,
   error = null,
@@ -146,9 +145,8 @@ const ProductList = ({
         <div className="catalogo-grilla">
           {productosVisibles.map((p) => (
             <ProductCard
-              key={p.id}
+              key={p._id}
               producto={p}
-              onSeleccionar={onSeleccionar}
               onAgregar={onAgregar}
             />
           ))}

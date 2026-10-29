@@ -30,7 +30,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
       <>
         <ul className="carrito-panel__lista">
           {items.map((item) => (
-            <li key={item.id} className="carrito-panel__item">
+            <li key={item._id} className="carrito-panel__item">
               <div className="carrito-panel__fila">
                 <span className="carrito-panel__nombre">{item.nombre}</span>
                 <span className="carrito-panel__precio">
@@ -43,7 +43,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
                   <button
                     type="button"
                     className="cantidad__btn"
-                    onClick={() => onCambiarCantidad(item.id, -1)}
+                    onClick={() => onCambiarCantidad(item._id, -1)}
                     aria-label={`Quitar una unidad de ${item.nombre}`}
                   >
                     −
@@ -52,7 +52,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
                   <button
                     type="button"
                     className="cantidad__btn"
-                    onClick={() => onCambiarCantidad(item.id, 1)}
+                    onClick={() => onCambiarCantidad(item._id, 1)}
                     aria-label={`Sumar una unidad de ${item.nombre}`}
                   >
                     +
@@ -62,7 +62,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
                 <button
                   type="button"
                   className="carrito-panel__quitar"
-                  onClick={() => onQuitar(item.id)}
+                  onClick={() => onQuitar(item._id)}
                 >
                   Quitar
                 </button>
