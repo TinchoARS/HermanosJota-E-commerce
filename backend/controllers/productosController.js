@@ -42,6 +42,22 @@ export async function actualizarProducto(req, res) {
   res.json(producto);
 }
 
+export async function eliminarProducto(req, res) {
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: 'Id inválido' });
+  }
+
+  const producto = await Product.findByIdAndDelete(id);
+
+  if (!producto) {
+    return res.status(404).json({ error: 'Producto no encontrado' });
+  }
+
+  res.json(producto);
+}
+
 export async function getProductoPorId(req, res) {
   const { id } = req.params;
 
