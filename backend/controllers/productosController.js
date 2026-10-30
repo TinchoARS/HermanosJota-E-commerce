@@ -1,20 +1,21 @@
-import productos from '../data/productos.js';
+import mongoose from 'mongoose';
+import Product from '../models/Product.js';
 
-export function getProductos(req, res) {
-  res.json(productos);
+export async function getProductos(req, res) {
+  res.json(await Product.find());
 }
 
-export function getProductoPorId(req, res) {
+export async function getProductoPorId(req, res) {
   const { id } = req.params;
 
-  if (!/^\d+$/.test(id)) {
-    return res.status(400).json({ error: `El id "${id}" no es válido` });
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: 'Id inválido' });
   }
 
-  const producto = productos.find((item) => item.id === Number(id));
+  const producto = await Product.findById(id);
 
   if (!producto) {
-    return res.status(404).json({ error: `Producto con id ${id} no encontrado` });
+    return res.status(404).json({ error: 'Producto no encontrado' });
   }
 
   res.json(producto);

@@ -1,11 +1,15 @@
-const path = require('path');
-const express = require('express');
-const cors = require('cors');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import express from 'express';
+import cors from 'cors';
 
-const logger = require('./middlewares/logger');
-const notFound = require('./middlewares/notFound');
-const errorHandler = require('./middlewares/errorHandler');
-const productosRouter = require('./routes/productos');
+import logger from './middlewares/logger.js';
+import notFound from './middlewares/notFound.js';
+import errorHandler from './middlewares/errorHandler.js';
+import productosRouter from './routes/productos.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -35,4 +39,4 @@ app.use('/api/productos', productosRouter);
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app;
+export default app;
