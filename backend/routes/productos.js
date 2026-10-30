@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', getProductos);
 router.get('/:id', getProductoPorId);
 
-router.all('/', methodNotAllowed);
-router.all('/:id', methodNotAllowed);
+router.all('/', methodNotAllowed(['GET']));
+router.all('/:id', methodNotAllowed(['GET']));
 
 export default router;
