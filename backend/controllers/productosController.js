@@ -23,6 +23,25 @@ export async function crearProducto(req, res) {
   res.status(201).json(producto);
 }
 
+export async function actualizarProducto(req, res) {
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: 'Id inválido' });
+  }
+
+  const producto = await Product.findByIdAndUpdate(id, datosDelBody(req.body), {
+    returnDocument: 'after',
+    runValidators: true,
+  });
+
+  if (!producto) {
+    return res.status(404).json({ error: 'Producto no encontrado' });
+  }
+
+  res.json(producto);
+}
+
 export async function getProductoPorId(req, res) {
   const { id } = req.params;
 
