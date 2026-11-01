@@ -40,37 +40,26 @@ const useCarrito = (productos = []) => {
     guardarCarrito(carrito);
   }, [carrito]);
 
+  const cantidadEnCarrito = (id) => carrito[id] || 0;
+
   const agregarAlCarrito = (producto, cantidad = 1) => {
-   
-    const cantidadActual = carrito[producto._id] || 0;
-    
-   
-    if (cantidadActual >= (producto.stock || 0)) {
-      return; 
-    }
+    const disponible = (producto.stock ?? 0) - cantidadEnCarrito(producto._id);
+    const cantidadAgregada = Math.min(cantidad, disponible);
+    if (cantidadAgregada <= 0) return;
 
-    
-    const cantidadAgregada = Math.min(cantidad, (producto.stock || 0) - cantidadActual);
-
-    setCarrito((items) => ({ 
-      ...items, 
-      [producto._id]: (items[producto._id] || 0) + cantidadAgregada 
+    setCarrito((items) => ({
+      ...items,
+      [producto._id]: (items[producto._id] || 0) + cantidadAgregada,
     }));
-    
-   
     setAviso({ id: Date.now(), nombre: producto.nombre, cantidad: cantidadAgregada });
   };
 
   const cambiarCantidad = (id, diferencia) => {
-    
-    const producto = productos.find((p) => p._id === id);
-    const stockMaximo = producto ? producto.stock : Infinity;
+    const stock = productos.find((p) => p._id === id)?.stock ?? Infinity;
 
     setCarrito((items) => {
-      const nuevaCantidad = (items[id] || 0) + diferencia;
-    
-      const cantidadFinal = Math.min(nuevaCantidad, stockMaximo);
-      return cantidadFinal > 0 ? { ...items, [id]: cantidadFinal } : sinProducto(items, id);
+      const nuevaCantidad = Math.min((items[id] || 0) + diferencia, stock);
+      return nuevaCantidad > 0 ? { ...items, [id]: nuevaCantidad } : sinProducto(items, id);
     });
   };
 
@@ -110,6 +99,7 @@ const useCarrito = (productos = []) => {
     cantidad,
     total,
     aviso,
+    cantidadEnCarrito,
     agregarAlCarrito,
     cambiarCantidad,
     quitarDelCarrito,

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import ProductForm from '../components/ProductForm';
 import { crearProducto } from '../services/api';
+import mensajeError from '../utils/mensajeError';
 import '../styles/admin.css';
 
 const MENSAJE_ERROR = 'No pudimos guardar el producto. Intentá de nuevo.';
@@ -17,14 +18,10 @@ const CrearProductoPage = () => {
     setErrorServidor(null);
     try {
       await crearProducto(datos);
-      
-      
       recargarCatalogo();
-      
       navigate('/productos');
     } catch (err) {
-      
-      setErrorServidor(err.message || MENSAJE_ERROR);
+      setErrorServidor(mensajeError(err, MENSAJE_ERROR));
       setEnviando(false);
     }
   };

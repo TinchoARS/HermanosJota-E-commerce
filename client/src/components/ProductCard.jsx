@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { urlImagen } from '../services/api';
 import formatPrice from '../utils/formatPrice';
+import textoStock from '../utils/textoStock';
 
-const ProductCard = ({ producto, onAgregar }) => {
+const ProductCard = ({ producto, enCarrito = 0, onAgregar }) => {
   const { _id, nombre, precio, imagenUrl, stock = 0 } = producto;
   const rutaDetalle = `/productos/${_id}`;
   const sinStock = stock === 0;
+  const sinDisponible = enCarrito >= stock;
 
   return (
     <article className="product-card">
@@ -26,7 +28,7 @@ const ProductCard = ({ producto, onAgregar }) => {
           {formatPrice(precio)}
         </p>
         <p className={`product-card-stock${sinStock ? ' product-card-stock--agotado' : ''}`}>
-          {sinStock ? 'Sin stock' : `Stock disponible: ${stock}`}
+          {textoStock(stock, enCarrito)}
         </p>
 
         <div className="product-card-acciones">
@@ -37,7 +39,7 @@ const ProductCard = ({ producto, onAgregar }) => {
             type="button"
             className="btn btn-primario"
             onClick={() => onAgregar(producto)}
-            disabled={sinStock}
+            disabled={sinDisponible}
           >
             Agregar
           </button>

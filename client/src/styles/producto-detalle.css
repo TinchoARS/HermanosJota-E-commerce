@@ -68,6 +68,16 @@
   align-items: center;
 }
 
+.producto-detalle__error {
+  margin: 0;
+  padding: 1rem;
+  border-left: 4px solid var(--color-error);
+  border-radius: 4px;
+  background-color: rgba(142, 47, 34, 0.1);
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+}
+
 .producto-detalle__miga {
   grid-column: 1 / -1;
   margin-bottom: -1.5rem;

@@ -3,7 +3,7 @@ import Hero from '../components/Hero';
 import ProductList from '../components/ProductList';
 
 const InicioPage = () => {
-  const { productos, loading, error, recargar, agregarAlCarrito, filtros, setFiltros } =
+  const { productos, loading, error, recargar, agregarAlCarrito, cantidadEnCarrito, filtros, setFiltros } =
     useOutletContext();
 
   return (
@@ -15,6 +15,7 @@ const InicioPage = () => {
         error={error}
         onReintentar={recargar}
         onAgregar={agregarAlCarrito}
+        cantidadEnCarrito={cantidadEnCarrito}
         filtros={filtros}
         onCambiarFiltros={setFiltros}
       />

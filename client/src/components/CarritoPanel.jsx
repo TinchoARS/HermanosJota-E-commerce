@@ -53,6 +53,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
                     type="button"
                     className="cantidad__btn"
                     onClick={() => onCambiarCantidad(item._id, 1)}
+                    disabled={item.cantidad >= item.stock}
                     aria-label={`Sumar una unidad de ${item.nombre}`}
                   >
                     +
