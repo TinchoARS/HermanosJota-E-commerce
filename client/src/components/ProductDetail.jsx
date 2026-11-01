@@ -3,18 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import useProducto from '../hooks/useProducto';
 import { urlImagen } from '../services/api';
 import formatPrice from '../utils/formatPrice';
+import mensajeError from '../utils/mensajeError';
+import textoStock from '../utils/textoStock';
 import '../styles/catalogo.css';
 import '../styles/producto-detalle.css';
 
 const CANTIDAD_MAXIMA = 10;
 
-const ProductDetail = ({ id, productoInicial, onAgregar, onEliminar }) => {
+const ProductDetail = ({ id, productoInicial, enCarrito = 0, onAgregar, onEliminar }) => {
   const { producto: detalle, error, noEncontrado, idInvalido, recargar } = useProducto(id);
   const navigate = useNavigate();
 
   const datos = detalle ?? productoInicial;
   const [cantidad, setCantidad] = useState(1);
   const [eliminando, setEliminando] = useState(false);
+  const [errorEliminar, setErrorEliminar] = useState(null);
 
   const botonVolver = (
     <Link to="/productos" className="btn btn-secundario">
@@ -66,31 +69,28 @@ const ProductDetail = ({ id, productoInicial, onAgregar, onEliminar }) => {
     );
   }
 
-  const { nombre, descripcion, precio, imagenUrl, stock = 0, _id } = datos;
+  const { nombre, descripcion, precio, imagenUrl, stock = 0 } = datos;
   const sinStock = stock === 0;
-  const cantidadMaxima = sinStock ? 1 : Math.min(CANTIDAD_MAXIMA, stock);
-  
-  const idProducto = _id || id;
+  const disponible = stock - enCarrito;
+  const sinDisponible = disponible <= 0;
+  const cantidadMaxima = Math.max(1, Math.min(CANTIDAD_MAXIMA, disponible));
 
   const agregar = () => {
-    if (sinStock) return;
+    if (sinDisponible) return;
     onAgregar(datos, cantidad);
     setCantidad(1);
   };
 
   const handleEliminar = async () => {
-    const confirmado = window.confirm('¿Estás seguro de que querés eliminar este producto?');
-    if (!confirmado) return;
+    if (!window.confirm('¿Estás seguro de que querés eliminar este producto?')) return;
 
     setEliminando(true);
+    setErrorEliminar(null);
     try {
-      
-      await onEliminar(idProducto);
-      
+      await onEliminar();
       navigate('/productos');
     } catch (err) {
-      console.error('Error al eliminar:', err);
-      alert('Hubo un problema al intentar eliminar el producto.');
+      setErrorEliminar(mensajeError(err, 'No pudimos eliminar el producto. Intentá de nuevo.'));
       setEliminando(false);
     }
   };
@@ -122,7 +122,7 @@ const ProductDetail = ({ id, productoInicial, onAgregar, onEliminar }) => {
           {formatPrice(precio)}
         </p>
         <p className={`producto-detalle__stock${sinStock ? ' producto-detalle__stock--agotado' : ''}`}>
-          {sinStock ? 'Sin stock' : `Stock disponible: ${stock}`}
+          {textoStock(stock, enCarrito)}
         </p>
 
         <div className="producto-detalle__seccion">
@@ -137,7 +137,7 @@ const ProductDetail = ({ id, productoInicial, onAgregar, onEliminar }) => {
               type="button"
               className="cantidad__btn"
               onClick={() => setCantidad((n) => n - 1)}
-              disabled={sinStock || cantidad <= 1}
+              disabled={sinDisponible || cantidad <= 1}
               aria-label="Restar una unidad"
             >
               −
@@ -147,7 +147,7 @@ const ProductDetail = ({ id, productoInicial, onAgregar, onEliminar }) => {
               type="button"
               className="cantidad__btn"
               onClick={() => setCantidad((n) => n + 1)}
-              disabled={sinStock || cantidad >= cantidadMaxima}
+              disabled={sinDisponible || cantidad >= cantidadMaxima}
               aria-label="Sumar una unidad"
             >
               +
@@ -156,7 +156,7 @@ const ProductDetail = ({ id, productoInicial, onAgregar, onEliminar }) => {
         </div>
 
         <div className="producto-detalle__acciones">
-          <button type="button" className="btn btn-primario" onClick={agregar} disabled={sinStock}>
+          <button type="button" className="btn btn-primario" onClick={agregar} disabled={sinDisponible}>
             Agregar al carrito
           </button>
           {botonVolver}
@@ -168,18 +168,14 @@ const ProductDetail = ({ id, productoInicial, onAgregar, onEliminar }) => {
             className="btn btn-peligro"
             onClick={handleEliminar}
             disabled={eliminando}
-            style={{ 
-              backgroundColor: '#d32f2f', 
-              color: 'white', 
-              border: 'none', 
-              padding: '0.5rem 1rem', 
-              borderRadius: '4px', 
-              cursor: eliminando ? 'not-allowed' : 'pointer' 
-            }}
           >
-            {eliminando ? 'Eliminando...' : 'Eliminar'}
+            {eliminando ? 'Eliminando…' : 'Eliminar'}
           </button>
         </div>
+
+        {errorEliminar && (
+          <p className="producto-detalle__error" role="alert">{errorEliminar}</p>
+        )}
       </div>
     </section>
   );

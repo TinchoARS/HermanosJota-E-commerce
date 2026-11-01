@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams, useOutletContext } from 'react-router-dom
 import ProductForm from '../components/ProductForm';
 import useProducto from '../hooks/useProducto';
 import { actualizarProducto } from '../services/api';
+import mensajeError from '../utils/mensajeError';
 import '../styles/catalogo.css';
 import '../styles/producto-detalle.css';
 import '../styles/admin.css';
@@ -19,12 +20,8 @@ const aValoresIniciales = (producto) => ({
 
 const EditarProductoPage = () => {
   const { id } = useParams();
-  
   const { producto, loading, error, noEncontrado, idInvalido, recargar: recargarProducto } = useProducto(id);
-  
-  
-  const { recargar: recargarCatalogo } = useOutletContext(); 
-
+  const { recargar: recargarCatalogo } = useOutletContext();
   const [enviando, setEnviando] = useState(false);
   const [errorServidor, setErrorServidor] = useState(null);
   const navigate = useNavigate();
@@ -34,14 +31,10 @@ const EditarProductoPage = () => {
     setErrorServidor(null);
     try {
       await actualizarProducto(id, datos);
-      
-      
-      recargarCatalogo(); 
-      
+      recargarCatalogo();
       navigate(`/productos/${id}`);
     } catch (err) {
-      
-      setErrorServidor(err.message || MENSAJE_ERROR);
+      setErrorServidor(mensajeError(err, MENSAJE_ERROR));
       setEnviando(false);
     }
   };

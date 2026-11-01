@@ -2,7 +2,7 @@ import { useOutletContext } from 'react-router-dom';
 import ProductList from '../components/ProductList';
 
 const CatalogoPage = () => {
-  const { productos, loading, error, recargar, agregarAlCarrito, filtros, setFiltros } =
+  const { productos, loading, error, recargar, agregarAlCarrito, cantidadEnCarrito, filtros, setFiltros } =
     useOutletContext();
 
   return (
@@ -12,6 +12,7 @@ const CatalogoPage = () => {
       error={error}
       onReintentar={recargar}
       onAgregar={agregarAlCarrito}
+      cantidadEnCarrito={cantidadEnCarrito}
       filtros={filtros}
       onCambiarFiltros={setFiltros}
     />

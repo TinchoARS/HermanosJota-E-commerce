@@ -23,6 +23,7 @@ const ordenar = (lista, orden) => {
 const ProductList = ({
   productos,
   onAgregar,
+  cantidadEnCarrito = () => 0,
   loading = false,
   error = null,
   onReintentar,
@@ -147,6 +148,7 @@ const ProductList = ({
             <ProductCard
               key={p._id}
               producto={p}
+              enCarrito={cantidadEnCarrito(p._id)}
               onAgregar={onAgregar}
             />
           ))}
