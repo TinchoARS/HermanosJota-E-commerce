@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import ProductForm from '../components/ProductForm';
 import useProducto from '../hooks/useProducto';
 import { actualizarProducto } from '../services/api';
@@ -19,7 +19,12 @@ const aValoresIniciales = (producto) => ({
 
 const EditarProductoPage = () => {
   const { id } = useParams();
-  const { producto, loading, error, noEncontrado, idInvalido, recargar } = useProducto(id);
+  
+  const { producto, loading, error, noEncontrado, idInvalido, recargar: recargarProducto } = useProducto(id);
+  
+  
+  const { recargar: recargarCatalogo } = useOutletContext(); 
+
   const [enviando, setEnviando] = useState(false);
   const [errorServidor, setErrorServidor] = useState(null);
   const navigate = useNavigate();
@@ -29,9 +34,14 @@ const EditarProductoPage = () => {
     setErrorServidor(null);
     try {
       await actualizarProducto(id, datos);
+      
+      
+      recargarCatalogo(); 
+      
       navigate(`/productos/${id}`);
-    } catch {
-      setErrorServidor(MENSAJE_ERROR);
+    } catch (err) {
+      
+      setErrorServidor(err.message || MENSAJE_ERROR);
       setEnviando(false);
     }
   };
@@ -67,7 +77,7 @@ const EditarProductoPage = () => {
       <section className="catalogo-estado" role="alert">
         <p>{error}</p>
         <div className="producto-detalle__acciones">
-          <button type="button" className="btn btn-primario" onClick={recargar}>
+          <button type="button" className="btn btn-primario" onClick={recargarProducto}>
             Reintentar
           </button>
           {linkCatalogo}
