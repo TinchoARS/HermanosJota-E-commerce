@@ -7,7 +7,7 @@ const errorHttp = (res) => {
   error.status = res.status;
   return error;
 };
-//
+
 const aProducto = ({ id, imagen, ...producto }) => ({
   ...producto,
   _id: producto._id ?? String(id),
@@ -28,20 +28,43 @@ export const obtenerProducto = async (id, signal) => {
   return aProducto(await res.json());
 };
 
-const PAUSA_SIMULADA_MS = 600;
-
-const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// TODO(B2): simulado. Falta probar el alta (F4) contra el POST real.
 export const crearProducto = async (datos) => {
-  await esperar(PAUSA_SIMULADA_MS);
-  return { _id: `simulado-${Date.now()}`, ...datos, createdAt: new Date().toISOString() };
+  const res = await fetch(URL_PRODUCTOS, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(datos),
+  });
+  
+  if (!res.ok) {
+    // Intentamos extraer el texto de validación (400) que manda el backend para mostrarlo en el formulario
+    const errorData = await res.json().catch(() => ({}));
+    const error = new Error(errorData.mensaje || errorData.message || errorData.error || `Error ${res.status}`);
+    error.status = res.status;
+    throw error;
+  }
+  
+  return aProducto(await res.json());
 };
 
-// TODO(B3): simulado. Falta probar la edición (F5) contra el PUT real.
 export const actualizarProducto = async (id, datos) => {
-  await esperar(PAUSA_SIMULADA_MS);
-  return { _id: id, ...datos, updatedAt: new Date().toISOString() };
+  const res = await fetch(`${URL_PRODUCTOS}/${encodeURIComponent(id)}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(datos),
+  });
+  
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    const error = new Error(errorData.mensaje || errorData.message || errorData.error || `Error ${res.status}`);
+    error.status = res.status;
+    throw error;
+  }
+  
+  return aProducto(await res.json());
 };
 
 export const urlImagen = (imagenUrl) => {
@@ -50,8 +73,12 @@ export const urlImagen = (imagenUrl) => {
   return `${API_URL}/${encodeURI(imagenUrl.replace(/^\/+/, ''))}`;
 };
 
-// TODO(B4): simulado. Falta probar la eliminación (F6) contra el DELETE real.
 export const eliminarProducto = async (id) => {
-  await esperar(PAUSA_SIMULADA_MS);
+  const res = await fetch(`${URL_PRODUCTOS}/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+  
+  if (!res.ok) throw errorHttp(res);
+  
   return { success: true };
 };
