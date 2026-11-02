@@ -822,6 +822,7 @@ color: inherit;
 
   .contact-visual {
     min-height: 32rem;
+    animation-name: fadeSlideIn;
   }
 
   .contact-visual__badge {
