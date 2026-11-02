@@ -85,7 +85,8 @@ El frontend no tiene productos propios: los pide a la API con `fetch`, centraliz
 - **CORS** configurado con una lista de orígenes permitidos, para que el frontend pueda consultar la API desde otro dominio.
 - **Archivos estáticos:** las imágenes del catálogo se sirven desde `/catalogo`.
 - **Logging global** de cada petición (método y URL), en un middleware propio.
-- **Middlewares separados** de la configuración, en `middlewares/`: logger, 404, errores y 405.
+- **Middlewares separados** de la configuración, en `middlewares/`: logger, conexión a la base, 404, errores y 405.
+- **Conexión a MongoDB reutilizable:** `server.js` se conecta antes de escuchar, y en Vercel, donde la entrada es `app.js`, el middleware de `/api` abre la conexión en el primer pedido y la reusa en los siguientes.
 - **Manejo de errores centralizado:** `400` con el detalle de cada campo cuando los datos no son válidos, `400` para ids mal formados y JSON roto, `404` para productos y rutas inexistentes, `405` para métodos no soportados y `500` para errores internos, siempre en JSON.
 
 ---
@@ -131,6 +132,7 @@ HermanosJota-E-commerce/
 │   │   └── productos.js           # Rutas del recurso productos
 │   ├── middlewares/
 │   │   ├── logger.js              # Log global de peticiones
+│   │   ├── conectarDB.js          # Espera la conexión a MongoDB antes de atender /api
 │   │   ├── notFound.js            # 404 para rutas inexistentes
 │   │   ├── errorHandler.js        # Manejador central de errores
 │   │   └── methodNotAllowed.js    # 405 para métodos no soportados

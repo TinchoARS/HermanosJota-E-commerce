@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 
 import logger from './middlewares/logger.js';
+import conectarDB from './middlewares/conectarDB.js';
 import notFound from './middlewares/notFound.js';
 import errorHandler from './middlewares/errorHandler.js';
 import productosRouter from './routes/productos.js';
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'HermanosJota E-commerce API' });
 });
 
+app.use('/api', conectarDB);
 app.use('/api/productos', productosRouter);
 
 app.use(notFound);
