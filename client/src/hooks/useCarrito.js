@@ -9,9 +9,8 @@ const leerCarrito = () => {
 
     const carrito = {};
     Object.entries(guardado).forEach(([id, cantidad]) => {
-      const idNumero = Number(id);
-      if (Number.isInteger(idNumero) && Number.isInteger(cantidad) && cantidad > 0) {
-        carrito[idNumero] = cantidad;
+      if (id && Number.isInteger(cantidad) && cantidad > 0) {
+        carrito[id] = cantidad;
       }
     });
     return carrito;
@@ -35,21 +34,31 @@ const sinProducto = (carrito, id) => {
 
 const useCarrito = (productos = []) => {
   const [carrito, setCarrito] = useState(leerCarrito);
-
   const [aviso, setAviso] = useState(null);
 
   useEffect(() => {
     guardarCarrito(carrito);
   }, [carrito]);
 
+  const cantidadEnCarrito = (id) => carrito[id] || 0;
+
   const agregarAlCarrito = (producto, cantidad = 1) => {
-    setCarrito((items) => ({ ...items, [producto.id]: (items[producto.id] || 0) + cantidad }));
-    setAviso({ id: Date.now(), nombre: producto.nombre, cantidad });
+    const disponible = (producto.stock ?? 0) - cantidadEnCarrito(producto._id);
+    const cantidadAgregada = Math.min(cantidad, disponible);
+    if (cantidadAgregada <= 0) return;
+
+    setCarrito((items) => ({
+      ...items,
+      [producto._id]: (items[producto._id] || 0) + cantidadAgregada,
+    }));
+    setAviso({ id: Date.now(), nombre: producto.nombre, cantidad: cantidadAgregada });
   };
 
   const cambiarCantidad = (id, diferencia) => {
+    const stock = productos.find((p) => p._id === id)?.stock ?? Infinity;
+
     setCarrito((items) => {
-      const nuevaCantidad = (items[id] || 0) + diferencia;
+      const nuevaCantidad = Math.min((items[id] || 0) + diferencia, stock);
       return nuevaCantidad > 0 ? { ...items, [id]: nuevaCantidad } : sinProducto(items, id);
     });
   };
@@ -62,7 +71,7 @@ const useCarrito = (productos = []) => {
     () =>
       Object.entries(carrito)
         .map(([id, cantidad]) => {
-          const producto = productos.find((item) => item.id === Number(id));
+          const producto = productos.find((item) => item._id === id);
           return producto ? { ...producto, cantidad } : null;
         })
         .filter(Boolean),
@@ -74,7 +83,10 @@ const useCarrito = (productos = []) => {
     [items]
   );
 
-  const cantidad = Object.values(carrito).reduce((suma, n) => suma + n, 0);
+  const cantidad =
+    productos.length > 0
+      ? items.reduce((suma, item) => suma + item.cantidad, 0)
+      : Object.values(carrito).reduce((suma, n) => suma + n, 0);
 
   useEffect(() => {
     if (!aviso) return;
@@ -87,6 +99,7 @@ const useCarrito = (productos = []) => {
     cantidad,
     total,
     aviso,
+    cantidadEnCarrito,
     agregarAlCarrito,
     cambiarCantidad,
     quitarDelCarrito,

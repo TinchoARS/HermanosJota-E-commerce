@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import heroImg from '../assets/hero.webp';
 import '../styles/catalogo.css';
 
-const Hero = ({ onVerCatalogo }) => {
+const Hero = () => {
   return (
     <section
       id="inicio"
@@ -15,9 +16,9 @@ const Hero = ({ onVerCatalogo }) => {
           Diseños inspirados en nuestros paisajes, fabricados a mano en maderas
           nativas.
         </p>
-        <button type="button" className="btn btn-primario hero-cta" onClick={onVerCatalogo}>
+        <Link to="/productos" className="btn btn-primario hero-cta">
           Ver catálogo
-        </button>
+        </Link>
       </div>
     </section>
   );

@@ -8,8 +8,10 @@
 
 .producto-detalle__imagen {
   background-color: var(--color-alabastro-calido);
-  border-radius: 4px;
+  border: 1px solid rgba(160, 82, 45, 0.25);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 12px 32px rgba(60, 30, 15, 0.1);
 }
 
 .producto-detalle__img {
@@ -38,6 +40,25 @@
   color: var(--color-verde-salvia);
 }
 
+.producto-detalle__stock {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.producto-detalle__stock--agotado {
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+}
+
+.producto-detalle__seccion {
+  padding: 1.25rem 1.5rem;
+  border: 1px solid rgba(160, 82, 45, 0.15);
+  border-left: 3px solid var(--color-siena-tostado);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 12px rgba(60, 30, 15, 0.04);
+}
+
 .producto-detalle__seccion h2 {
   font-family: var(--font-secundaria);
   font-size: 1.1rem;
@@ -47,6 +68,7 @@
 }
 
 .producto-detalle__seccion p {
+  margin: 0;
   line-height: var(--line-height-cuerpo);
   font-weight: var(--font-weight-light);
 }
@@ -56,6 +78,16 @@
   flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
+}
+
+.producto-detalle__error {
+  margin: 0;
+  padding: 1rem;
+  border-left: 4px solid var(--color-error);
+  border-radius: 4px;
+  background-color: rgba(142, 47, 34, 0.1);
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
 }
 
 .producto-detalle__miga {
