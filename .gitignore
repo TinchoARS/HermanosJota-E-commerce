@@ -5,19 +5,20 @@ ManualDeMarca.pdf
 
 # Node
 node_modules/
-.env
-!client/.env
 .DS_Store
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Variables de entorno (se suben solo los .env.example)
+.env
+.env.local
+.env.*.local
+
 # Build
 dist/
 build/
-.env.local
-.env.*.local
 
 # Logs
 logs/

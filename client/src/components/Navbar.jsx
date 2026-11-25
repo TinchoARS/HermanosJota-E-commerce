@@ -7,6 +7,7 @@ const SECCIONES = [
   { ruta: '/', texto: 'INICIO', end: true },
   { ruta: '/productos', texto: 'CATÁLOGO' },
   { ruta: '/contacto', texto: 'CONTACTO' },
+  { ruta: '/admin/crear-producto', texto: 'CREAR PRODUCTO' },
 ];
 
 const Navbar = ({

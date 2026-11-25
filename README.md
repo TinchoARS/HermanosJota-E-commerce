@@ -65,11 +65,11 @@ El frontend no tiene productos propios: los pide a la API con `fetch`, centraliz
 
 **Frontend**
 
-- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto) y botón de carrito en el centro de la barra, con ícono, la palabra "Carrito" y el contador de productos agregados. Queda fijo arriba al scrollear y suma una sombra suave para separarse del contenido. En tablet y celular se acomoda en dos filas.
+- **Navbar:** logo, navegación (Inicio, Catálogo, Contacto, Crear producto) y botón de carrito en el centro de la barra, con ícono, la palabra "Carrito" y el contador de productos agregados. Queda fijo arriba al scrollear y suma una sombra suave para separarse del contenido. En tablet y celular se acomoda en dos filas.
 - **Inicio:** banner de bienvenida con imagen, título y botón "Ver catálogo", y el catálogo debajo.
 - **Catálogo de productos (`/productos`):** grilla de tarjetas con imagen, nombre, precio en formato ARS y stock (dos columnas en el celular). Tiene buscador por nombre (sin importar mayúsculas ni tildes: "cordoba" encuentra "Sillas Córdoba"), orden por precio o por nombre y contador de resultados. Incluye estados de carga (spinner), de error con botón "Reintentar", de lista vacía y de búsqueda sin resultados.
 - **Detalle de producto (`/productos/:id`):** miga de pan, imagen grande, nombre, descripción, precio, stock y selector de cantidad, con los botones "Agregar al carrito", "Volver al catálogo", "Editar" y "Eliminar". Aparece al instante con los datos que ya trajo el catálogo y se actualiza con `GET /api/productos/:id`. Si el producto no existe muestra "Producto no encontrado", y si la dirección tiene un id mal formado, "Producto no válido".
-- **Alta y edición de productos (`/admin/crear-producto` y `/admin/editar-producto/:id`):** formulario controlado con validación en el cliente (nombre y precio obligatorios, precio y stock no negativos, stock entero). Mientras se guarda, el botón se deshabilita; si la API responde con error, lo muestra arriba del botón. Al terminar vuelve al catálogo o al detalle, ya actualizados. El alta no tiene link en el menú: se entra escribiendo la dirección.
+- **Alta y edición de productos (`/admin/crear-producto` y `/admin/editar-producto/:id`):** formulario controlado con validación en el cliente (nombre y precio obligatorios, precio y stock no negativos, stock entero). Mientras se guarda, el botón se deshabilita; si la API responde con error, lo muestra arriba del botón. Al terminar vuelve al catálogo o al detalle, ya actualizados. El alta se abre desde "Crear producto" en el menú.
 - **Eliminar producto:** pide confirmación, lo borra con `DELETE`, lo saca del carrito y vuelve al catálogo. Si falla, muestra el error en la página.
 - **Carrito de compras:** contador en el navbar y panel desplegable con cada producto, su cantidad (con botones + y −), el botón "Quitar", el total y "Finalizar compra" (simulado). Se cierra con Escape o al hacer clic afuera. Se guarda en `localStorage`, así no se pierde al recargar. Al agregar aparece un aviso flotante que se oculta solo. Cuando el carrito ya tiene todo el stock de un producto, los botones para sumar se deshabilitan y se avisa "Ya tenés todo el stock en el carrito".
 - **Contacto (`/contacto`):** formulario controlado con validación propia: campos obligatorios (no acepta solo espacios) y formato de email, con el error debajo de cada campo. Al fallar la validación, el foco va al primer campo a corregir. Al enviar muestra un mensaje de éxito que se borra solo al minuto, al volver a escribir o al cambiar de pestaña. Al lado tiene un panel con los datos del showroom, WhatsApp y email.
@@ -80,7 +80,7 @@ El frontend no tiene productos propios: los pide a la API con `fetch`, centraliz
 **Backend**
 
 - **API REST con CRUD completo** de productos sobre MongoDB Atlas.
-- **Validación con Mongoose:** nombre y precio obligatorios, precio y stock no negativos. El `PUT` también valida (`runValidators`).
+- **Validación con Mongoose:** nombre y precio obligatorios, precio y stock no negativos y stock entero. `nombre`, `descripcion` e `imagenUrl` se guardan sin espacios al principio ni al final (`trim`), así que un nombre de solo espacios da `400`. Todos los mensajes de error están en español, incluido cuando el precio o el stock no son números. El `PUT` también valida (`runValidators`).
 - **Solo se guardan los campos del modelo:** lo que llegue en el body fuera de `nombre`, `descripcion`, `precio`, `stock` e `imagenUrl` (por ejemplo `_id` o `createdAt`) se ignora.
 - **CORS** configurado con una lista de orígenes permitidos, para que el frontend pueda consultar la API desde otro dominio.
 - **Archivos estáticos:** las imágenes del catálogo se sirven desde `/catalogo`.
@@ -122,6 +122,7 @@ HermanosJota-E-commerce/
 │   ├── app.js                     # Configura y exporta la app de Express
 │   ├── server.js                  # Punto de entrada: conecta a MongoDB y después hace listen()
 │   ├── .env                       # Variables de entorno (no se sube al repo)
+│   ├── .env.example               # Plantilla del .env, sin datos reales
 │   ├── config/
 │   │   └── db.js                  # Conexión a MongoDB Atlas con Mongoose
 │   ├── models/
@@ -148,7 +149,8 @@ HermanosJota-E-commerce/
 │   ├── index.html                 # Incluye la meta description y las etiquetas Open Graph
 │   ├── vite.config.js
 │   ├── vercel.json                # Rewrite de SPA: toda ruta sirve index.html
-│   ├── .env                       # URL de la API (VITE_API_URL)
+│   ├── .env                       # URL de la API (no se sube al repo)
+│   ├── .env.example               # Plantilla del .env con VITE_API_URL local
 │   ├── public/
 │   │   └── og-image.jpg           # Imagen de la vista previa al compartir el link
 │   ├── src/
@@ -231,12 +233,12 @@ Base local: `http://localhost:3000` · En producción: `https://hermanosjota-api
 }
 ```
 
-`nombre` y `precio` son obligatorios; `precio` y `stock` no pueden ser negativos y `stock` vale `0` si no se manda.
+`nombre` y `precio` son obligatorios; `precio` y `stock` no pueden ser negativos, y `stock` tiene que ser entero y vale `0` si no se manda. `nombre`, `descripcion` e `imagenUrl` se guardan sin espacios al principio ni al final, así que un `nombre` de solo espacios cuenta como vacío y da `400`.
 
-**Errores:** siempre en JSON. Cuando los datos no son válidos, la respuesta trae el detalle de cada campo:
+**Errores:** siempre en JSON y en español. Cuando los datos no son válidos (también si `precio` o `stock` no son números), la respuesta trae el detalle de cada campo:
 
 ```json
-{ "error": "Datos inválidos", "detalles": { "precio": "Path `precio` (-5) is less than minimum allowed value (0)." } }
+{ "error": "Datos inválidos", "detalles": { "precio": "El precio no puede ser negativo" } }
 ```
 
 Sobre `/api/productos` se admiten `GET` y `POST`, y sobre `/api/productos/:id`, `GET`, `PUT` y `DELETE`. Los demás métodos devuelven `405 Method Not Allowed` con el header `Allow`.
@@ -247,13 +249,13 @@ curl -X POST http://localhost:3000/api/productos -H "Content-Type: application/j
 curl -i http://localhost:3000/api/productos/000000000000000000000000      # 404
 ```
 
-**Postman:** la colección está en `backend/postman/jota-api.postman_collection.json`. Al importarla, la variable `baseUrl` apunta a `http://localhost:3000`. Conviene correrla en orden: "Crear producto" guarda el `_id` que después usan "Obtener", "Actualizar" y "Eliminar", y cada pedido tiene un test que controla el código de respuesta.
+**Postman:** la colección está en `backend/postman/jota-api.postman_collection.json`. Al importarla, la variable `baseUrl` apunta a `http://localhost:3000`. Conviene correrla en orden: "Crear producto" guarda el `_id` que después usan "Obtener", "Actualizar" y "Eliminar", y cada pedido tiene un test que controla el código de respuesta. Para `POST` y `PUT` también hay casos con nombre de solo espacios, stock decimal y precio no numérico, que esperan `400`.
 
 ---
 
 ## 🔐 Variables de entorno
 
-**Backend** — `backend/.env`. No se sube al repo porque tiene la contraseña de la base: cada integrante lo crea con el connection string que se comparte por un canal privado.
+**Backend** — `backend/.env`. No se sube al repo porque tiene la contraseña de la base: cada integrante lo crea copiando `backend/.env.example` y completa `MONGODB_URI` con el connection string que se comparte por un canal privado.
 
 | Variable | Obligatoria | Valor por defecto | Para qué sirve |
 | :--- | :--- | :--- | :--- |
@@ -265,11 +267,13 @@ curl -i http://localhost:3000/api/productos/000000000000000000000000      # 404
 MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/
 ```
 
-**Frontend** — `client/.env`. Viene en el repo, porque solo tiene la URL de la API, que no es secreta.
+**Frontend** — `client/.env`. Tampoco se sube al repo: se crea copiando `client/.env.example`, que ya trae la URL de la API local.
 
 | Variable | Valor local | Para qué sirve |
 | :--- | :--- | :--- |
 | `VITE_API_URL` | `http://localhost:3000` | URL base de la API |
+
+> ⚠️ **Para el equipo:** antes el `client/.env` venía en el repo. Al hacer pull de este cambio, git lo borra de tu carpeta, así que hay que volver a crearlo desde el `.env.example` (ver [Frontend](#2-frontend)).
 
 ---
 
@@ -286,7 +290,14 @@ cd HermanosJota-E-commerce
 
 ### 1. Backend
 
-Creá `backend/.env` con `MONGODB_URI` (ver [Variables de entorno](#-variables-de-entorno)) y después:
+Creá `backend/.env` copiando el `.env.example` y completá `MONGODB_URI` (ver [Variables de entorno](#-variables-de-entorno)):
+
+```bash
+cp backend/.env.example backend/.env           # macOS, Linux o Git Bash
+Copy-Item backend/.env.example backend/.env    # Windows (PowerShell)
+```
+
+Y después:
 
 ```bash
 cd backend
@@ -298,15 +309,20 @@ Primero se conecta a MongoDB y, recién cuando la conexión está lista, queda e
 
 ### 2. Frontend
 
-En **otra terminal**:
+En **otra terminal**, desde la raíz del repo, creá `client/.env` copiando el `.env.example`, que ya trae `VITE_API_URL=http://localhost:3000`:
+
+```bash
+cp client/.env.example client/.env           # macOS, Linux o Git Bash
+Copy-Item client/.env.example client/.env    # Windows (PowerShell)
+```
+
+Y después:
 
 ```bash
 cd client
 npm install
 npm run dev
 ```
-
-El `client/.env` viene en el repo con `VITE_API_URL=http://localhost:3000`, así que no hay que crear nada.
 
 Queda disponible en `http://localhost:5173`.
 
@@ -331,7 +347,7 @@ El backend escucha en el **3000** y el frontend en el **5173**, así que no se p
 
 El **3000 se mantiene por decisión conjunta del grupo, siguiendo la recomendación de la profesora**. También se evaluaron el 8080 y el 3001, pero se eligió el 3000 por ser la convención de Node/Express y el indicado en el curso.
 
-Si en tu máquina el 3000 está ocupado, corré el backend en otro puerto y poné `VITE_API_URL=http://localhost:4000` en `client/.env`:
+Si en tu máquina el 3000 está ocupado, corré el backend en otro puerto (o cambiá `PORT` en tu `backend/.env`) y poné `VITE_API_URL=http://localhost:4000` en tu `client/.env`:
 
 ```bash
 PORT=4000 npm run dev            # macOS, Linux o Git Bash

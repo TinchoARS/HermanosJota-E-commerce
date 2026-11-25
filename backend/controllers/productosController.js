@@ -33,6 +33,7 @@ export async function actualizarProducto(req, res) {
   const producto = await Product.findByIdAndUpdate(id, datosDelBody(req.body), {
     returnDocument: 'after',
     runValidators: true,
+    multipleCastError: true,
   });
 
   if (!producto) {

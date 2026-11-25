@@ -13,6 +13,10 @@
     {
       "key": "productoId",
       "value": ""
+    },
+    {
+      "key": "productoEspaciosId",
+      "value": ""
     }
   ],
   "item": [
@@ -146,6 +150,140 @@
           "response": []
         },
         {
+          "name": "Actualizar con stock decimal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test('error en detalles.stock', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error).to.equal('Datos inválidos');",
+                  "  pm.expect(body.detalles.stock).to.equal('El stock tiene que ser un número entero');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 2.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "{{productoId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar con precio no numérico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test('error en detalles.precio', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error).to.equal('Datos inválidos');",
+                  "  pm.expect(body.detalles.precio).to.equal('El precio tiene que ser un número');",
+                  "});",
+                  "",
+                  "pm.test('sin mensaje de Mongoose', () => pm.expect(pm.response.text()).to.not.include('Cast to Number'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"precio\": \"abc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "{{productoId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar con nombre de solo espacios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test('error en detalles.nombre', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error).to.equal('Datos inválidos');",
+                  "  pm.expect(body.detalles.nombre).to.equal('El nombre es obligatorio');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"   \"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "{{productoId}}"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Eliminar producto",
           "event": [
             {
@@ -165,6 +303,72 @@
               "raw": "{{baseUrl}}/api/productos/{{productoId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "productos", "{{productoId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear producto con espacios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "",
+                  "pm.test('nombre sin espacios', () => pm.expect(pm.response.json().nombre).to.equal('Mesa'));",
+                  "",
+                  "pm.collectionVariables.set('productoEspaciosId', pm.response.json()._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"  Mesa  \",\n  \"precio\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar producto con espacios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoEspaciosId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "{{productoEspaciosId}}"]
             }
           },
           "response": []
@@ -284,6 +488,140 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Precio negativo\",\n  \"precio\": -5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST con nombre de solo espacios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test('error en detalles.nombre', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error).to.equal('Datos inválidos');",
+                  "  pm.expect(body.detalles.nombre).to.equal('El nombre es obligatorio');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"   \",\n  \"precio\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST con precio no numérico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test('error en detalles.precio', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error).to.equal('Datos inválidos');",
+                  "  pm.expect(body.detalles.precio).to.equal('El precio tiene que ser un número');",
+                  "});",
+                  "",
+                  "pm.test('sin mensaje de Mongoose', () => pm.expect(pm.response.text()).to.not.include('Cast to Number'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Precio no numérico\",\n  \"precio\": \"abc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST con stock decimal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test('error en detalles.stock', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.error).to.equal('Datos inválidos');",
+                  "  pm.expect(body.detalles.stock).to.equal('El stock tiene que ser un número entero');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Stock decimal\",\n  \"precio\": 1000,\n  \"stock\": 2.5\n}",
               "options": {
                 "raw": {
                   "language": "json"
