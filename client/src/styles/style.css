@@ -643,15 +643,17 @@ color: inherit;
   left: 50%;
   width: min(50%, 13rem);
   height: auto;
-  pointer-events: none;
+  cursor: pointer;
   filter: brightness(0) invert(1);
   opacity: 0.9;
-  transform: translateX(-50%) scale(1);
-  transition: transform 5s ease-out, opacity 0.4s ease;
+  transform: translate3d(-50%, 0, 0) scale(1);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.45s ease;
 }
 
-.contact-visual:hover .contact-visual__imagen {
-  transform: translateX(-50%) scale(1.08);
+.contact-visual__imagen:hover {
+  transform: translate3d(-50%, 0, 0) scale(1.04);
   opacity: 1;
 }
 
@@ -707,13 +709,18 @@ color: inherit;
   color: var(--color-siena-tostado);
   text-decoration: none;
   animation: testimonialIn 0.7s ease-out both;
-  transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+  will-change: transform;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.35s ease;
 }
 
 .contact-card:hover {
   transform: translateY(-2px);
   border-color: rgba(212, 164, 55, 0.65);
   background-color: rgba(245, 230, 211, 0.96);
+  box-shadow: 0 8px 20px rgba(60, 30, 15, 0.14);
 }
 
 .contact-card:focus-visible {

@@ -1,20 +1,86 @@
 import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { crearPedido } from '../services/api';
 import formatPrice from '../utils/formatPrice';
+import mensajeError from '../utils/mensajeError';
 
-const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onFinalizarCompra, onCerrar }) => {
-  const [compraFinalizada, setCompraFinalizada] = useState(false);
+const CarritoPanel = ({
+  items,
+  cantidad,
+  total,
+  onCambiarCantidad,
+  onQuitar,
+  onFinalizarCompra,
+  onRecargarCatalogo,
+  onCerrar,
+}) => {
+  const [pedidoConfirmado, setPedidoConfirmado] = useState(null);
+  const [enviando, setEnviando] = useState(false);
+  const [errorCompra, setErrorCompra] = useState('');
 
-  const finalizarCompra = () => {
-    onFinalizarCompra();
-    setCompraFinalizada(true);
+  const { usuario, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const finalizarCompra = async () => {
+    if (enviando || items.length === 0) return;
+
+    // 1. Si no hay sesión activa, redirigir a /login conservando el carrito
+    if (!usuario) {
+      onCerrar();
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+
+    // 2. Enviar pedido autenticado al backend
+    setEnviando(true);
+    setErrorCompra('');
+    try {
+      const itemsPayload = items.map((item) => ({
+        producto: item._id,
+        cantidad: item.cantidad,
+      }));
+
+      const respuesta = await crearPedido(itemsPayload);
+      const pedido = respuesta?.pedido ?? respuesta;
+
+      onFinalizarCompra();
+      onRecargarCatalogo?.();
+      setPedidoConfirmado(pedido);
+    } catch (err) {
+      if (err.status === 401) {
+        logout();
+        onCerrar();
+        navigate('/login', { state: { from: location }, replace: true });
+        return;
+      }
+      setErrorCompra(mensajeError(err, 'No pudimos procesar tu compra. Intentá nuevamente.'));
+    } finally {
+      setEnviando(false);
+    }
   };
 
   const contenido = () => {
-    if (compraFinalizada) {
+    if (pedidoConfirmado) {
       return (
-        <p className="carrito-panel__mensaje" role="status">
-          ¡Gracias por tu compra! Te vamos a escribir para coordinar el pago y la entrega.
-        </p>
+        <div className="carrito-panel__confirmacion" role="status">
+          <p className="carrito-panel__mensaje">
+            ¡Compra registrada con éxito! Gracias por elegir Hermanos Jota.
+          </p>
+          {pedidoConfirmado._id && (
+            <p className="carrito-panel__pedido-id">
+              N.º de pedido: <strong>#{pedidoConfirmado._id.slice(-6).toUpperCase()}</strong>
+            </p>
+          )}
+          <Link
+            to="/mis-pedidos"
+            className="btn btn-primario carrito-panel__finalizar"
+            onClick={onCerrar}
+          >
+            Ver mis pedidos
+          </Link>
+        </div>
       );
     }
 
@@ -44,6 +110,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
                     type="button"
                     className="cantidad__btn"
                     onClick={() => onCambiarCantidad(item._id, -1)}
+                    disabled={enviando}
                     aria-label={`Quitar una unidad de ${item.nombre}`}
                   >
                     −
@@ -53,7 +120,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
                     type="button"
                     className="cantidad__btn"
                     onClick={() => onCambiarCantidad(item._id, 1)}
-                    disabled={item.cantidad >= item.stock}
+                    disabled={enviando || item.cantidad >= item.stock}
                     aria-label={`Sumar una unidad de ${item.nombre}`}
                   >
                     +
@@ -64,6 +131,7 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
                   type="button"
                   className="carrito-panel__quitar"
                   onClick={() => onQuitar(item._id)}
+                  disabled={enviando}
                 >
                   Quitar
                 </button>
@@ -77,8 +145,23 @@ const CarritoPanel = ({ items, cantidad, total, onCambiarCantidad, onQuitar, onF
           <span>{formatPrice(total)}</span>
         </div>
 
-        <button type="button" className="btn btn-primario carrito-panel__finalizar" onClick={finalizarCompra}>
-          Finalizar compra
+        {errorCompra && (
+          <p className="form-error" role="alert">
+            {errorCompra}
+          </p>
+        )}
+
+        <button
+          type="button"
+          className="btn btn-primario carrito-panel__finalizar"
+          onClick={finalizarCompra}
+          disabled={enviando}
+        >
+          {enviando
+            ? 'Procesando compra...'
+            : usuario
+              ? 'Finalizar compra'
+              : 'Ingresar para comprar'}
         </button>
       </>
     );

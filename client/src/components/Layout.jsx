@@ -27,6 +27,7 @@ const Layout = () => {
         onCambiarCantidad={carrito.cambiarCantidad}
         onQuitarDelCarrito={carrito.quitarDelCarrito}
         onFinalizarCompra={carrito.vaciarCarrito}
+        onRecargarCatalogo={catalogo.recargar}
       />
 
       <main>
