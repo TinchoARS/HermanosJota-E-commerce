@@ -8,6 +8,7 @@ import conectarDB from './middlewares/conectarDB.js';
 import notFound from './middlewares/notFound.js';
 import errorHandler from './middlewares/errorHandler.js';
 import productosRouter from './routes/productos.js';
+import authRouter from './routes/auth.js';
 import pedidosRouter from './routes/pedidos.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 
 app.use('/api', conectarDB);
 app.use('/api/productos', productosRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/pedidos', pedidosRouter);
 
 app.use(notFound);

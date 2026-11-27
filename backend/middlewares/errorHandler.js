@@ -13,6 +13,13 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ error: mensaje });
   }
 
+  if (err.code === 11000) {
+    return res.status(409).json({
+      error: 'El email ya está registrado',
+      detalles: { email: 'El email ya está registrado' },
+    });
+  }
+
   if (err.type === 'entity.parse.failed') {
     return res.status(400).json({ error: 'JSON inválido' });
   }
