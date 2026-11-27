@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import useProducto from '../hooks/useProducto';
 import { urlImagen } from '../services/api';
 import formatPrice from '../utils/formatPrice';
@@ -12,7 +13,9 @@ const CANTIDAD_MAXIMA = 10;
 
 const ProductDetail = ({ id, productoInicial, enCarrito = 0, onAgregar, onEliminar }) => {
   const { producto: detalle, error, noEncontrado, idInvalido, recargar } = useProducto(id);
+  const { usuario, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const datos = detalle ?? productoInicial;
   const [cantidad, setCantidad] = useState(1);
@@ -90,6 +93,11 @@ const ProductDetail = ({ id, productoInicial, enCarrito = 0, onAgregar, onElimin
       await onEliminar();
       navigate('/productos');
     } catch (err) {
+      if (err.status === 401) {
+        logout();
+        navigate('/login', { state: { from: location }, replace: true });
+        return;
+      }
       setErrorEliminar(mensajeError(err, 'No pudimos eliminar el producto. Intentá de nuevo.'));
       setEliminando(false);
     }
@@ -160,17 +168,21 @@ const ProductDetail = ({ id, productoInicial, enCarrito = 0, onAgregar, onElimin
             Agregar al carrito
           </button>
           {botonVolver}
-          <Link to={`/admin/editar-producto/${id}`} className="btn btn-secundario">
-            Editar
-          </Link>
-          <button
-            type="button"
-            className="btn btn-peligro"
-            onClick={handleEliminar}
-            disabled={eliminando}
-          >
-            {eliminando ? 'Eliminando…' : 'Eliminar'}
-          </button>
+          {usuario && (
+            <>
+              <Link to={`/admin/editar-producto/${id}`} className="btn btn-secundario">
+                Editar
+              </Link>
+              <button
+                type="button"
+                className="btn btn-peligro"
+                onClick={handleEliminar}
+                disabled={eliminando}
+              >
+                {eliminando ? 'Eliminando…' : 'Eliminar'}
+              </button>
+            </>
+          )}
         </div>
 
         {errorEliminar && (

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import CarritoPanel from './CarritoPanel';
+import { useAuth } from '../context/AuthContext';
 
-const SECCIONES = [
+const SECCIONES_PUBLICAS = [
   { ruta: '/', texto: 'INICIO', end: true },
   { ruta: '/productos', texto: 'CATÁLOGO' },
   { ruta: '/contacto', texto: 'CONTACTO' },
-  { ruta: '/admin/crear-producto', texto: 'CREAR PRODUCTO' },
 ];
 
 const Navbar = ({
@@ -17,12 +17,15 @@ const Navbar = ({
   onCambiarCantidad,
   onQuitarDelCarrito,
   onFinalizarCompra,
+  onRecargarCatalogo,
 }) => {
   const [carritoAbierto, setCarritoAbierto] = useState(false);
   const contenedorCarrito = useRef(null);
   const botonCarrito = useRef(null);
-
   const [scrolleado, setScrolleado] = useState(false);
+
+  const { usuario, cargando, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const actualizar = () => setScrolleado(window.scrollY > 8);
@@ -52,6 +55,11 @@ const Navbar = ({
     };
   }, [carritoAbierto]);
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <nav className={`navbar${scrolleado ? ' navbar--scrolleado' : ''}`}>
       <Link to="/" className="navbar-logo-container">
@@ -67,15 +75,15 @@ const Navbar = ({
           aria-expanded={carritoAbierto}
           aria-label={`Carrito, ${cantidadCarrito} ${cantidadCarrito === 1 ? 'producto' : 'productos'}`}
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="22" 
-            height="22" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
             <circle cx="9" cy="21" r="1"></circle>
@@ -87,24 +95,61 @@ const Navbar = ({
         </button>
 
         {carritoAbierto && (
-          <CarritoPanel
-            items={itemsCarrito}
-            cantidad={cantidadCarrito}
-            total={totalCarrito}
-            onCambiarCantidad={onCambiarCantidad}
-            onQuitar={onQuitarDelCarrito}
-            onFinalizarCompra={onFinalizarCompra}
-            onCerrar={() => setCarritoAbierto(false)}
-          />
+         <CarritoPanel
+         items={itemsCarrito}
+         cantidad={cantidadCarrito}
+         total={totalCarrito}
+         onCambiarCantidad={onCambiarCantidad}
+         onQuitar={onQuitarDelCarrito}
+         onFinalizarCompra={onFinalizarCompra}
+         onRecargarCatalogo={onRecargarCatalogo}
+         onCerrar={() => setCarritoAbierto(false)}
+       />
         )}
       </div>
 
       <ul className="navbar-links">
-        {SECCIONES.map(({ ruta, texto, end }) => (
+        {SECCIONES_PUBLICAS.map(({ ruta, texto, end }) => (
           <li key={ruta}>
-            <NavLink to={ruta} end={end}>{texto}</NavLink>
+            <NavLink to={ruta} end={end}>
+              {texto}
+            </NavLink>
           </li>
         ))}
+
+        {!cargando && usuario && (
+          <>
+            <li>
+              <NavLink to="/admin/crear-producto">CREAR PRODUCTO</NavLink>
+            </li>
+            <li>
+              <NavLink to="/mis-pedidos">MIS PEDIDOS</NavLink>
+            </li>
+            <li>
+              <NavLink to="/perfil">HOLA, {usuario.nombre.toUpperCase()}</NavLink>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="navbar-logout-btn"
+              >
+                SALIR
+              </button>
+            </li>
+          </>
+        )}
+
+        {!cargando && !usuario && (
+          <>
+            <li>
+              <NavLink to="/login">INGRESAR</NavLink>
+            </li>
+            <li>
+              <NavLink to="/registro">REGISTRARSE</NavLink>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );

@@ -1,0 +1,473 @@
+.navbar-logout-btn {
+    background: none;
+    border: 1px solid rgba(160, 82, 45, 0.35);
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    color: var(--color-siena-tostado);
+    font-family: var(--font-principal);
+    font-weight: var(--font-weight-medium);
+    font-size: 0.82rem;
+    letter-spacing: var(--letter-spacing-ctas);
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .navbar-logout-btn:hover {
+    background-color: var(--color-siena-tostado);
+    border-color: var(--color-siena-tostado);
+    color: var(--color-alabastro-calido);
+  }
+  
+  /* Estado de carga en rutas protegidas */
+  .cargando-sesion {
+    max-width: 520px;
+    margin: 5rem auto;
+    padding: 2rem;
+    text-align: center;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-siena-tostado);
+  }
+  
+  /* =========================================================
+     Login y Registro (.auth-page)
+     ========================================================= */
+  
+  .auth-page {
+    max-width: 520px;
+    margin: 3.5rem auto 4.5rem;
+    padding: 0 5%;
+    animation: aparecerDesdeAbajo 0.7s ease-out forwards;
+  }
+  
+  .auth-card {
+    background-color: rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(160, 82, 45, 0.22);
+    border-radius: 1.25rem;
+    padding: 2.5rem 2.25rem;
+    box-shadow: 0 14px 36px rgba(60, 30, 15, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .auth-card h1 {
+    font-family: var(--font-secundaria);
+    font-weight: var(--font-weight-bold);
+    font-size: 2rem;
+    letter-spacing: var(--letter-spacing-titulos);
+    color: var(--color-siena-tostado);
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .auth-card > p:first-of-type {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: var(--font-weight-light);
+    color: rgba(160, 82, 45, 0.82);
+    margin-bottom: 1.75rem;
+  }
+  
+  .auth-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  
+  .campo-grupo label {
+    font-size: 0.8rem;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(160, 82, 45, 0.88);
+  }
+  
+  .campo-grupo input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(160, 82, 45, 0.28);
+    border-radius: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.65);
+    font-family: var(--font-principal);
+    font-size: 0.95rem;
+    color: var(--color-siena-tostado);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  }
+  
+  .campo-grupo input::placeholder {
+    color: rgba(160, 82, 45, 0.42);
+  }
+  
+  .campo-grupo input:focus {
+    outline: none;
+    border-color: var(--color-verde-salvia);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(135, 169, 107, 0.2);
+  }
+  
+  .campo-grupo input:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+  
+  .auth-card form button[type='submit'] {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.95rem 1.5rem;
+    border: none;
+    border-radius: 0.75rem;
+    background-color: var(--color-siena-tostado);
+    color: var(--color-alabastro-calido);
+    font-family: var(--font-principal);
+    font-weight: var(--font-weight-medium);
+    font-size: 0.9rem;
+    letter-spacing: var(--letter-spacing-ctas);
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(160, 82, 45, 0.18);
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease;
+  }
+  
+  .auth-card form button[type='submit']:hover:not(:disabled) {
+    background-color: var(--color-verde-salvia);
+    color: #1a2e05;
+  }
+  
+  .auth-card form button[type='submit']:active:not(:disabled) {
+    transform: scale(0.985);
+  }
+  
+  .auth-card form button[type='submit']:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+  
+  .error-mensaje {
+    margin-bottom: 1.25rem;
+    padding: 0.85rem 1rem;
+    border-left: 4px solid var(--color-error);
+    border-radius: 0.5rem;
+    background-color: rgba(142, 47, 34, 0.1);
+    color: var(--color-error);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .error-mensaje ul {
+    margin-top: 0.4rem;
+    padding-left: 1.25rem;
+    font-weight: var(--font-weight-regular);
+  }
+  
+  .auth-alternativa {
+    margin-top: 1.6rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(160, 82, 45, 0.16);
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(160, 82, 45, 0.85);
+  }
+  
+  .auth-alternativa a {
+    color: var(--color-siena-tostado);
+    font-weight: var(--font-weight-bold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+  }
+  
+  .auth-alternativa a:hover {
+    color: var(--color-verde-salvia);
+  }
+  
+  /* =========================================================
+     Perfil de Usuario (.perfil-page)
+     ========================================================= */
+  
+  .perfil-page {
+    max-width: 620px;
+    margin: 3.5rem auto 4.5rem;
+    padding: 0 5%;
+    animation: aparecerDesdeAbajo 0.7s ease-out forwards;
+  }
+  
+  .perfil-card {
+    background-color: rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(160, 82, 45, 0.22);
+    border-radius: 1.25rem;
+    padding: 2.5rem 2.25rem;
+    box-shadow: 0 14px 36px rgba(60, 30, 15, 0.08);
+  }
+  
+  .perfil-card h1 {
+    font-family: var(--font-secundaria);
+    font-weight: var(--font-weight-bold);
+    font-size: 2rem;
+    letter-spacing: var(--letter-spacing-titulos);
+    color: var(--color-siena-tostado);
+    margin-bottom: 0.35rem;
+  }
+  
+  .perfil-subtitulo {
+    font-size: 0.95rem;
+    font-weight: var(--font-weight-light);
+    color: rgba(160, 82, 45, 0.8);
+    margin-bottom: 1.75rem;
+  }
+  
+  .perfil-datos {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(160, 82, 45, 0.18);
+    border-bottom: 1px solid rgba(160, 82, 45, 0.18);
+  }
+  
+  .perfil-dato-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+  
+  .perfil-dato-fila + .perfil-dato-fila {
+    border-top: 1px dashed rgba(160, 82, 45, 0.18);
+  }
+  
+  .perfil-dato-fila dt {
+    font-size: 0.8rem;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(160, 82, 45, 0.75);
+  }
+  
+  .perfil-dato-fila dd {
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-siena-tostado);
+    text-align: right;
+    word-break: break-word;
+  }
+  
+  .perfil-acciones {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+  
+  .perfil-link-pedidos {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.35rem;
+    border: 1px solid var(--color-siena-tostado);
+    border-radius: 0.75rem;
+    color: var(--color-siena-tostado);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-ctas);
+    text-transform: uppercase;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  
+  .perfil-link-pedidos:hover {
+    background-color: rgba(160, 82, 45, 0.1);
+  }
+  
+  .perfil-btn-salir {
+    margin-top: 0;
+    padding: 0.85rem 1.35rem;
+    border-radius: 0.75rem;
+    font-size: 0.85rem;
+    letter-spacing: var(--letter-spacing-ctas);
+  }
+  
+  /* =========================================================
+     Historial de Pedidos (.pedidos-page)
+     ========================================================= */
+  
+  .pedidos-page {
+    max-width: 860px;
+    margin: 3.5rem auto 4.5rem;
+    padding: 0 5%;
+    animation: aparecerDesdeAbajo 0.7s ease-out forwards;
+  }
+  
+  .pedidos-cabecera {
+    margin-bottom: 2rem;
+  }
+  
+  .pedidos-cabecera h1 {
+    font-family: var(--font-secundaria);
+    font-weight: var(--font-weight-bold);
+    font-size: 2.2rem;
+    letter-spacing: var(--letter-spacing-titulos);
+    color: var(--color-siena-tostado);
+    margin-bottom: 0.35rem;
+  }
+  
+  .pedidos-subtitulo {
+    font-size: 0.95rem;
+    font-weight: var(--font-weight-light);
+    color: rgba(160, 82, 45, 0.82);
+  }
+  
+  .pedidos-vacio {
+    background-color: rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(160, 82, 45, 0.22);
+    border-radius: 1.25rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  
+  .pedidos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .pedido-card {
+    background-color: rgba(255, 255, 255, 0.46);
+    border: 1px solid rgba(160, 82, 45, 0.22);
+    border-radius: 1.15rem;
+    padding: 1.6rem 1.85rem;
+    box-shadow: 0 10px 28px rgba(60, 30, 15, 0.06);
+  }
+  
+  .pedido-card__cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(160, 82, 45, 0.18);
+  }
+  
+  .pedido-card__numero {
+    font-family: var(--font-secundaria);
+    font-weight: var(--font-weight-bold);
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+    color: var(--color-siena-tostado);
+  }
+  
+  .pedido-card__fecha {
+    font-size: 0.85rem;
+    font-weight: var(--font-weight-light);
+    color: rgba(160, 82, 45, 0.78);
+    margin-top: 0.2rem;
+  }
+  
+  .pedido-card__estado {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    background-color: rgba(135, 169, 107, 0.22);
+    border: 1px solid rgba(135, 169, 107, 0.5);
+    color: #2d4414;
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  
+  .pedido-card__items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0.6rem 0;
+  }
+  
+  .pedido-card__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    font-size: 0.95rem;
+  }
+  
+  .pedido-card__item + .pedido-card__item {
+    border-top: 1px dashed rgba(160, 82, 45, 0.16);
+  }
+  
+  .pedido-card__item-subtotal {
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+  }
+  
+  .pedido-card__pie {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.9rem;
+    border-top: 1px solid rgba(160, 82, 45, 0.22);
+    font-size: 1.05rem;
+  }
+  
+  .pedido-card__pie strong {
+    font-size: 1.15rem;
+    color: var(--color-siena-tostado);
+  }
+  
+  /* Detalle confirmación dentro de CarritoPanel */
+  .carrito-panel__confirmacion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .carrito-panel__pedido-id {
+    font-size: 0.85rem;
+    color: var(--color-siena-tostado);
+  }
+  
+  .carrito-panel__confirmacion a.carrito-panel__finalizar {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  @media (max-width: 600px) {
+    .auth-card,
+    .perfil-card {
+      padding: 1.75rem 1.35rem;
+    }
+  
+    .perfil-dato-fila {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  
+    .perfil-dato-fila dd {
+      text-align: left;
+    }
+  
+    .perfil-acciones {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .pedido-card {
+      padding: 1.25rem 1.2rem;
+    }
+  
+    .pedido-card__cabecera {
+      flex-direction: column;
+    }
+  }
