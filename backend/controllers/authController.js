@@ -24,7 +24,7 @@ export async function registro(req, res) {
 
   const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, {
     algorithm: 'HS256',
-    expiresIn: '6d',
+    expiresIn: '7d',
   });
 
   res.status(201).json({ token, usuario });

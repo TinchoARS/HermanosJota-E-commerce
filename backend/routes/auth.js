@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/registro', registro);
 router.post('/login', login);
+
 router.all('/registro', methodNotAllowed(['POST']));
 router.all('/login', methodNotAllowed(['POST']));
 
