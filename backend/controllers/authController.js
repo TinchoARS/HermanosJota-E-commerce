@@ -24,8 +24,32 @@ export async function registro(req, res) {
 
   const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, {
     algorithm: 'HS256',
-    expiresIn: '6d',
+    expiresIn: '7d',
   });
 
   res.status(201).json({ token, usuario });
+}
+
+export async function login(req, res) {
+  const { email, password } = req.body ?? {};
+
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return res.status(400).json({
+      error: 'Datos inválidos',
+      detalles: { credenciales: 'Email y contraseña requeridos' },
+    });
+  }
+
+  const user = await User.findOne({ email: email.trim().toLowerCase() });
+
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(401).json({ error: 'Email o contraseña incorrectos' });
+  }
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    algorithm: 'HS256',
+    expiresIn: '7d',
+  });
+
+  res.status(200).json({ token, usuario: user.toJSON() });
 }
